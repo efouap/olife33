@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>O LIFE — Sync Control Plane</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@300;400;500;600;700&family=Epilogue:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:      #050608;
+  --s1:      #090c10;
+  --s2:      #0d1018;
+  --s3:      #121620;
+  --border:  #181d28;
+  --border2: #1f2535;
+  --text:    #8a9ab5;
+  --hi:      #dce6f5;
+  --dim:     #333d52;
+  --muted:   #4a5870;
+
+  --up:      #00e5b0;
+  --up-d:    rgba(0,229,176,.06);
+  --up-bd:   rgba(0,229,176,.2);
+
+  --pull:    #4da6ff;
+  --pull-d:  rgba(77,166,255,.06);
+  --pull-bd: rgba(77,166,255,.2);
+
+  --del:     #ff5c7a;
+  --del-d:   rgba(255,92,122,.06);
+  --del-bd:  rgba(255,92,122,.2);
+
+  --warn:    #ffaa2e;
+  --warn-d:  rgba(255,170,46,.06);
+  --warn-bd: rgba(255,170,46,.2);
+
+  --rt:      #b06fff;
+  --rt-d:    rgba(176,111,255,.06);
+  --rt-bd:   rgba(176,111,255,.2);
+
+  --f-mono: 'Azeret Mono', monospace;
+  --f-ui:   'Epilogue', sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f-ui);overflow:hidden}
+
+/* ── BACKGROUND GRID ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size:48px 48px;
+  opacity:.35;
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 60% at 50% 0%, rgba(0,229,176,.04) 0%, transparent 65%);
+}
+
+/* ── SHELL ── */
+.shell{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* ── HEADER ── */
+header{
+  display:flex;align-items:center;gap:24px;
+  padding:0 32px;height:56px;
+  border-bottom:1px solid var(--border);
+  background:rgba(5,6,8,.85);
+  backdrop-filter:blur(12px);
+  flex-shrink:0;
+}
+.wordmark{
+  font-family:var(--f-ui);font-size:15px;font-weight:900;
+  color:var(--hi);letter-spacing:-.03em;
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.wm-icon{
+  width:24px;height:24px;background:var(--up);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-mono);font-size:9px;font-weight:700;color:#000;
+  flex-shrink:0;
+}
+.wm-sub{font-weight:300;color:var(--muted)}
+
+.header-sep{flex:1}
+.conn-row{display:flex;align-items:center;gap:8px}
+.conn-input{
+  background:var(--s2);border:1px solid var(--border2);
+  color:var(--text);font-family:var(--f-mono);font-size:11px;
+  padding:7px 12px;outline:none;width:240px;
+  transition:border-color .15s;
+}
+.conn-input:focus{border-color:var(--up)}
+.conn-input::placeholder{color:var(--dim)}
+
+.btn{
+  font-family:var(--f-mono);font-size:10px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:8px 18px;border:1px solid var(--border2);
+  background:transparent;color:var(--muted);
+  cursor:pointer;transition:all .15s;
+}
+.btn:hover{border-color:var(--up);color:var(--up);background:var(--up-d)}
+.btn.primary{background:var(--up);color:#000;border-color:var(--up)}
+.btn.primary:hover{background:#00ffca}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+
+.status-pill{
+  display:flex;align-items:center;gap:7px;
+  font-family:var(--f-mono);font-size:10px;color:var(--muted);
+  padding:6px 14px;border:1px solid var(--border2);
+}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--dim);flex-shrink:0;transition:all .3s}
+.status-dot.online{background:var(--up);box-shadow:0 0 10px var(--up);animation:breathe 2.5s infinite}
+.status-dot.syncing{background:var(--warn);box-shadow:0 0 8px var(--warn);animation:breathe .8s infinite}
+.status-dot.error{background:var(--del);box-shadow:0 0 8px var(--del)}
+@keyframes breathe{50%{opacity:.3}}
+
+/* ── MAIN ── */
+.main{display:grid;grid-template-columns:1fr 1fr 360px;flex:1;overflow:hidden;gap:0}
+
+/* ── PANELS ── */
+.panel{display:flex;flex-direction:column;border-right:1px solid var(--border);overflow:hidden}
+.panel:last-child{border-right:none}
+.panel-header{
+  padding:18px 24px 14px;border-bottom:1px solid var(--border);flex-shrink:0;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+}
+.panel-title{
+  font-family:var(--f-mono);font-size:10px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+  margin-bottom:4px;
+}
+.panel-value{
+  font-family:var(--f-ui);font-size:32px;font-weight:900;
+  color:var(--hi);line-height:1;letter-spacing:-.03em;
+}
+.panel-value.up{color:var(--up)}
+.panel-value.pull{color:var(--pull)}
+.panel-value.del{color:var(--del)}
+.panel-meta{font-family:var(--f-mono);font-size:10px;color:var(--dim);margin-top:4px}
+
+.panel-body{flex:1;overflow-y:auto;padding:16px 24px}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.stat-card{
+  background:var(--s2);border:1px solid var(--border2);
+  padding:14px 16px;
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--dim);transition:background .3s;
+}
+.stat-card.up-card::before{background:var(--up)}
+.stat-card.pull-card::before{background:var(--pull)}
+.stat-card.del-card::before{background:var(--del)}
+.stat-card.rt-card::before{background:var(--rt)}
+
+.stat-val{
+  font-family:var(--f-ui);font-size:26px;font-weight:900;
+  color:var(--hi);line-height:1;letter-spacing:-.03em;margin-bottom:4px;
+}
+.stat-lbl{font-family:var(--f-mono);font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+
+/* ── MISSION LIST ── */
+.mission-list{display:flex;flex-direction:column;gap:1px}
+.mission-row{
+  display:grid;grid-template-columns:28px 1fr auto auto;
+  align-items:center;gap:10px;
+  padding:10px 12px;background:var(--s2);border:1px solid var(--border);
+  transition:background .1s;cursor:default;
+  animation:rowIn .2s ease both;
+}
+.mission-row:hover{background:var(--s3)}
+@keyframes rowIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.row-idx{font-family:var(--f-mono);font-size:9px;color:var(--dim);text-align:center}
+.row-name{font-family:var(--f-mono);font-size:11px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-status{font-family:var(--f-mono);font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px}
+.row-status.complete {background:rgba(0,229,176,.1);color:var(--up);  border:1px solid var(--up-bd)}
+.row-status.pending  {background:var(--s3);color:var(--muted);        border:1px solid var(--border2)}
+.row-status.running  {background:rgba(77,166,255,.1);color:var(--pull);border:1px solid var(--pull-bd)}
+.row-status.failed   {background:rgba(255,92,122,.1);color:var(--del); border:1px solid var(--del-bd)}
+.row-dirty{font-family:var(--f-mono);font-size:9px;color:var(--warn);letter-spacing:.06em}
+
+.empty-local{
+  font-family:var(--f-mono);font-size:11px;color:var(--dim);
+  padding:32px 0;text-align:center;letter-spacing:.06em;
+}
+.add-row{
+  display:flex;gap:8px;margin-bottom:16px;
+}
+.add-input{
+  flex:1;background:var(--s2);border:1px solid var(--border2);
+  color:var(--text);font-family:var(--f-mono);font-size:11px;
+  padding:8px 12px;outline:none;transition:border-color .15s;
+}
+.add-input:focus{border-color:var(--up)}
+.add-input::placeholder{color:var(--dim)}
+
+/* ── EVENT LOG ── */
+.log-panel{flex-direction:column;background:var(--s1)}
+.log-header{
+  padding:14px 20px;border-bottom:1px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.log-title{font-family:var(--f-mono);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.log-clear{
+  font-family:var(--f-mono);font-size:9px;color:var(--dim);
+  background:none;border:1px solid var(--border);padding:3px 10px;
+  cursor:pointer;transition:all .15s;
+}
+.log-clear:hover{border-color:var(--del);color:var(--del)}
+
+.log-feed{flex:1;overflow-y:auto;padding:0}
+.log-entry{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 16px;border-bottom:1px solid var(--border);
+  animation:logIn .2s ease both;
+}
+.log-entry:first-child{border-top:none}
+@keyframes logIn{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
+
+.log-pip{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.pip-start{background:var(--warn)}
+.pip-progress{background:var(--pull)}
+.pip-complete{background:var(--up)}
+.pip-error{background:var(--del)}
+.pip-realtime{background:var(--rt)}
+.pip-online{background:var(--up)}
+.pip-offline{background:var(--del)}
+
+.log-body{flex:1;min-width:0}
+.log-type{
+  font-family:var(--f-mono);font-size:9px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:2px;
+}
+.log-msg{font-family:var(--f-mono);font-size:11px;color:var(--text);line-height:1.5;word-break:break-all}
+.log-time{font-family:var(--f-mono);font-size:9px;color:var(--dim);flex-shrink:0;margin-top:1px}
+
+/* ── PROGRESS BAR ── */
+.sync-progress{
+  height:2px;background:var(--border);overflow:hidden;flex-shrink:0;
+}
+.sync-progress-fill{
+  height:100%;width:0;background:var(--up);
+  transition:width .3s ease;
+}
+.sync-progress-fill.indeterminate{
+  width:40%;
+  animation:sweep 1s linear infinite;
+}
+@keyframes sweep{0%{transform:translateX(-150%)}100%{transform:translateX(300%)}}
+
+/* ── BOTTOM STRIP ── */
+.strip{
+  height:32px;display:flex;align-items:center;gap:24px;
+  padding:0 24px;border-top:1px solid var(--border);
+  background:rgba(5,6,8,.9);flex-shrink:0;
+  font-family:var(--f-mono);font-size:10px;
+}
+.strip-seg{color:var(--dim)}
+.strip-seg span{color:var(--text)}
+.strip-right{margin-left:auto;display:flex;align-items:center;gap:20px}
+.rt-indicator{display:flex;align-items:center;gap:6px;color:var(--dim)}
+.rt-dot{width:5px;height:5px;border-radius:50%;background:var(--dim)}
+.rt-dot.active{background:var(--rt);box-shadow:0 0 6px var(--rt);animation:breathe 1.5s infinite}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2)}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="wordmark">
+    <div class="wm-icon">↑↓</div>
+    O LIFE <span class="wm-sub">/ Sync</span>
+  </div>
+
+  <div class="conn-row">
+    <input class="conn-input" id="supaUrl" placeholder="https://xxx.supabase.co" />
+    <input class="conn-input" id="supaKey" placeholder="anon key" type="password" style="width:200px" />
+    <button class="btn primary" id="btnConnect">Connect</button>
+  </div>
+
+  <div class="header-sep"></div>
+
+  <button class="btn" id="btnSync">↑↓ Sync Now</button>
+
+  <div class="status-pill">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusLabel">Not connected</span>
+  </div>
+</header>
+
+<div class="sync-progress"><div class="sync-progress-fill" id="progressFill"></div></div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <!-- LOCAL DB -->
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Local (IndexedDB)</div>
+        <div class="panel-value" id="localCount">0</div>
+        <div class="panel-meta"><span id="dirtyCount">0</span> dirty · <span id="deletedCount">0</span> pending delete</div>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="add-row">
+        <input class="add-input" id="missionInput" placeholder="mission name (e.g. subscription_graveyard)" />
+        <button class="btn" id="btnAdd">+ Add</button>
+      </div>
+      <div class="mission-list" id="missionList">
+        <div class="empty-local">No local missions — add one above</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SYNC STATS -->
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Sync Statistics</div>
+        <div class="panel-value" id="totalSyncs">0</div>
+        <div class="panel-meta">total syncs · <span id="lastSyncTime">never</span></div>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="stat-grid">
+        <div class="stat-card up-card">
+          <div class="stat-val" id="statPushed">0</div>
+          <div class="stat-lbl">Pushed</div>
+        </div>
+        <div class="stat-card pull-card">
+          <div class="stat-val" id="statPulled">0</div>
+          <div class="stat-lbl">Pulled</div>
+        </div>
+        <div class="stat-card del-card">
+          <div class="stat-val" id="statDeleted">0</div>
+          <div class="stat-lbl">Deleted</div>
+        </div>
+        <div class="stat-card rt-card">
+          <div class="stat-val" id="statRt">0</div>
+          <div class="stat-lbl">Realtime</div>
+        </div>
+      </div>
+
+      <div style="margin-top:8px">
+        <div class="panel-title" style="margin-bottom:12px">Last Sync Result</div>
+        <div id="lastSyncResult" style="font-family:var(--f-mono);font-size:11px;color:var(--dim);line-height:1.8">
+          No sync run yet. Connect and click Sync Now.
+        </div>
+      </div>
+
+      <div style="margin-top:20px">
+        <div class="panel-title" style="margin-bottom:10px">Auto-Sync</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="btn" id="btnAutoStart">Start Auto (30s)</button>
+          <button class="btn" id="btnAutoStop" disabled>Stop Auto</button>
+          <button class="btn" id="btnStartRt">Start Realtime</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVENT LOG -->
+  <div class="panel log-panel">
+    <div class="log-header">
+      <span class="log-title">Sync Event Log</span>
+      <button class="log-clear" id="btnClearLog">Clear</button>
+    </div>
+    <div class="log-feed" id="logFeed"></div>
+  </div>
+
+</div>
+
+<!-- ── STRIP ── -->
+<div class="strip">
+  <div class="strip-seg">Local: <span id="stripLocal">0</span></div>
+  <div class="strip-seg">Dirty: <span id="stripDirty">0</span></div>
+  <div class="strip-right">
+    <div class="rt-indicator"><div class="rt-dot" id="rtDot"></div><span id="rtLabel">Realtime: off</span></div>
+    <div class="strip-seg" id="stripStatus">Idle</div>
+  </div>
+</div>
+
+</div>
+
+<script type="module">
+import Dexie from 'https://cdn.jsdelivr.net/npm/dexie@3/dist/modern/dexie.mjs';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+// ── LOCAL DB (Dexie) ────────────────────────────────────────────────────────
+const db = new Dexie('olife_local');
+db.version(1).stores({
+  missions: 'id, user_id, mission, status, created_at, updated_at, _dirty, _deleted, _synced_at',
+  sync_meta: 'key',
+});
+
+// ── STATE ───────────────────────────────────────────────────────────────────
+let supabase    = null;
+let currentUser = null;
+let syncing     = false;
+let autoTimer   = null;
+let rtChannel   = null;
+let logCount    = 0;
+let rtCount     = 0;
+
+const cumStats = { pushed:0, pulled:0, deleted:0, syncs:0 };
+
+// ── CONNECT ─────────────────────────────────────────────────────────────────
+document.getElementById('btnConnect').addEventListener('click', async () => {
+  const url = document.getElementById('supaUrl').value.trim();
+  const key = document.getElementById('supaKey').value.trim();
+  if (!url || !key) { addLog('error','Connect','Enter Supabase URL and anon key'); return; }
+
+  try {
+    supabase = createClient(url, key, { auth: { persistSession: true } });
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error) throw error;
+    currentUser = user;
+    setStatus('online', currentUser ? `Authed: ${currentUser.email}` : 'Connected (anon)');
+    addLog('complete', 'Connect', `Supabase connected · user: ${currentUser?.email ?? 'anon'}`);
+    document.getElementById('btnConnect').disabled = true;
+    document.getElementById('btnSync').disabled    = false;
+  } catch(err) {
+    setStatus('error', 'Connection failed');
+    addLog('error', 'Connect', err.message);
+  }
+});
+
+// ── syncMissions — full implementation of original stub ─────────────────────
+async function syncMissions() {
+  if (syncing || !supabase) return;
+  syncing = true;
+  setProgress(true);
+  setStatus('syncing', 'Syncing…');
+  addLog('start', 'Sync', 'Sync started');
+
+  const stats = { pushed:0, pulled:0, deleted:0 };
+  const t0 = Date.now();
+
+  try {
+    // ── PHASE 1: Push dirty rows ──────────────────────────────────────────
+    const dirty = await db.missions.where('_dirty').equals(1)
+      .and(r => !r._deleted).toArray();
+
+    if (dirty.length) {
+      addLog('progress', 'Push', `Pushing ${dirty.length} dirty row(s)…`);
+      const payload = dirty.map(({ _dirty, _deleted, _synced_at, ...row }) => row);
+
+      // Original stub pattern — upsert to Supabase
+      const { error } = await supabase.from('missions').upsert(payload, { onConflict: 'id' });
+      if (error) throw new Error('Push failed: ' + error.message);
+
+      await Promise.all(dirty.map(r =>
+        db.missions.update(r.id, { _dirty:0, _synced_at: new Date().toISOString() })
+      ));
+      stats.pushed = dirty.length;
+      addLog('progress', 'Push', `Pushed ${dirty.length} mission(s) ✓`);
+    }
+
+    // ── PHASE 2: Push deletes ─────────────────────────────────────────────
+    const toDelete = await db.missions.where('_deleted').equals(1).toArray();
+    if (toDelete.length) {
+      const ids = toDelete.map(r => r.id);
+      const { error } = await supabase.from('missions').delete().in('id', ids);
+      if (error) throw new Error('Delete push failed: ' + error.message);
+      await db.missions.bulkDelete(ids);
+      stats.deleted = ids.length;
+      addLog('progress', 'Delete', `Deleted ${ids.length} mission(s) remotely ✓`);
+    }
+
+    // ── PHASE 3: Pull remote changes since cursor ─────────────────────────
+    const cursorRow = await db.sync_meta.get('last_sync_cursor');
+    const cursor = cursorRow?.value ?? null;
+
+    let q = supabase.from('missions').select('*')
+      .order('updated_at', { ascending:true }).limit(500);
+    if (cursor) q = q.gt('updated_at', cursor);
+
+    const { data: remote, error: pullErr } = await q;
+    if (pullErr) throw new Error('Pull failed: ' + pullErr.message);
+
+    if (remote?.length) {
+      // Conflict resolution: server wins unless local dirty + newer
+      const toMerge = [];
+      for (const r of remote) {
+        const local = await db.missions.get(r.id);
+        if (local?._dirty && local.updated_at > r.updated_at) continue;
+        toMerge.push({ ...r, _dirty:0, _deleted:0, _synced_at: new Date().toISOString() });
+      }
+      if (toMerge.length) {
+        await db.missions.bulkPut(toMerge);
+        stats.pulled = toMerge.length;
+      }
+      const newest = remote[remote.length-1].updated_at;
+      await db.sync_meta.put({ key:'last_sync_cursor', value: newest });
+      addLog('progress', 'Pull', `Pulled ${stats.pulled} mission(s) from cloud ✓`);
+    }
+
+    // ── Complete ──────────────────────────────────────────────────────────
+    const elapsed = Date.now() - t0;
+    cumStats.pushed  += stats.pushed;
+    cumStats.pulled  += stats.pulled;
+    cumStats.deleted += stats.deleted;
+    cumStats.syncs++;
+
+    const msg = `↑${stats.pushed} ↓${stats.pulled} ✗${stats.deleted} · ${elapsed}ms`;
+    addLog('complete', 'Sync', msg);
+    setStatus('online', 'Synced');
+    updateStatsUI(stats, elapsed);
+
+  } catch(err) {
+    addLog('error', 'Sync', err.message);
+    setStatus('error', 'Sync failed');
+  } finally {
+    syncing = false;
+    setProgress(false);
+    await refreshLocalUI();
+  }
+}
+
+// ── ADD LOCAL MISSION ───────────────────────────────────────────────────────
+document.getElementById('btnAdd').addEventListener('click', addMission);
+document.getElementById('missionInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addMission();
+});
+
+async function addMission() {
+  const name = document.getElementById('missionInput').value.trim();
+  if (!name) return;
+  const now = new Date().toISOString();
+  const id  = crypto.randomUUID();
+  await db.missions.put({
+    id, mission: name,
+    user_id:    currentUser?.id ?? 'anon',
+    status:     'pending',
+    payload:    {},
+    created_at: now, updated_at: now,
+    _dirty: 1, _deleted: 0, _synced_at: null,
+  });
+  document.getElementById('missionInput').value = '';
+  addLog('start', 'Local', `Added: ${name}`);
+  await refreshLocalUI();
+}
+
+// ── DELETE LOCAL ────────────────────────────────────────────────────────────
+async function softDelete(id) {
+  await db.missions.update(id, { _deleted:1, _dirty:1, updated_at: new Date().toISOString() });
+  addLog('error', 'Local', `Soft-deleted: ${id.slice(0,8)}…`);
+  await refreshLocalUI();
+}
+
+// ── REFRESH LOCAL LIST ──────────────────────────────────────────────────────
+async function refreshLocalUI() {
+  const all     = await db.missions.toArray();
+  const dirty   = all.filter(r => r._dirty && !r._deleted).length;
+  const deleted = all.filter(r => r._deleted).length;
+  const active  = all.filter(r => !r._deleted);
+
+  document.getElementById('localCount').textContent  = active.length;
+  document.getElementById('dirtyCount').textContent  = dirty;
+  document.getElementById('deletedCount').textContent= deleted;
+  document.getElementById('stripLocal').textContent  = active.length;
+  document.getElementById('stripDirty').textContent  = dirty;
+
+  const list = document.getElementById('missionList');
+  if (!active.length) {
+    list.innerHTML = '<div class="empty-local">No local missions</div>';
+    return;
+  }
+  list.innerHTML = active.slice(-30).reverse().map((r, i) => {
+    const isNew = r._dirty && !r._synced_at;
+    return `<div class="mission-row" style="animation-delay:${i*20}ms">
+      <div class="row-idx">${i+1}</div>
+      <div class="row-name" title="${esc(r.id)}">${esc(r.mission)}</div>
+      <div class="row-status ${esc(r.status)}">${esc(r.status)}</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        ${r._dirty ? `<span class="row-dirty">${isNew?'NEW':'DIRTY'}</span>` : ''}
+        <button onclick="window._del('${r.id}')" style="background:none;border:none;color:var(--del);font-size:13px;cursor:pointer;padding:2px 6px" title="Delete">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+window._del = softDelete;
+
+// ── STATS UI ────────────────────────────────────────────────────────────────
+function updateStatsUI(last, elapsed) {
+  document.getElementById('statPushed').textContent  = cumStats.pushed;
+  document.getElementById('statPulled').textContent  = cumStats.pulled;
+  document.getElementById('statDeleted').textContent = cumStats.deleted;
+  document.getElementById('totalSyncs').textContent  = cumStats.syncs;
+  document.getElementById('lastSyncTime').textContent = new Date().toLocaleTimeString('en-US',{hour12:false});
+  document.getElementById('lastSyncResult').innerHTML =
+    `<span style="color:var(--up)">↑ Pushed</span>   ${last.pushed} row(s)\n` +
+    `<span style="color:var(--pull)">↓ Pulled</span>   ${last.pulled} row(s)\n` +
+    `<span style="color:var(--del)">✗ Deleted</span>  ${last.deleted} row(s)\n` +
+    `<span style="color:var(--muted)">⏱ Duration</span> ${elapsed}ms`;
+  document.getElementById('lastSyncResult').style.whiteSpace = 'pre';
+}
+
+// ── AUTO SYNC ────────────────────────────────────────────────────────────────
+document.getElementById('btnAutoStart').addEventListener('click', () => {
+  if (autoTimer) return;
+  syncMissions();
+  autoTimer = setInterval(syncMissions, 30_000);
+  document.getElementById('btnAutoStart').disabled = true;
+  document.getElementById('btnAutoStop').disabled  = false;
+  addLog('start', 'Auto', 'Auto-sync started (30s interval)');
+});
+document.getElementById('btnAutoStop').addEventListener('click', () => {
+  clearInterval(autoTimer); autoTimer = null;
+  document.getElementById('btnAutoStart').disabled = false;
+  document.getElementById('btnAutoStop').disabled  = true;
+  addLog('error', 'Auto', 'Auto-sync stopped');
+});
+
+// ── REALTIME ──────────────────────────────────────────────────────────────────
+document.getElementById('btnStartRt').addEventListener('click', () => {
+  if (!supabase || !currentUser) { addLog('error','Realtime','Connect + auth required'); return; }
+  if (rtChannel) { supabase.removeChannel(rtChannel); rtChannel=null; }
+
+  rtChannel = supabase
+    .channel('sync:missions')
+    .on('postgres_changes',
+      { event:'*', schema:'public', table:'missions', filter:`user_id=eq.${currentUser.id}` },
+      async payload => {
+        rtCount++;
+        document.getElementById('statRt').textContent = rtCount;
+        document.getElementById('rtDot').className   = 'rt-dot active';
+        document.getElementById('rtLabel').textContent= 'Realtime: live';
+        addLog('realtime','Realtime', `${payload.eventType} · ${payload.new?.mission ?? payload.old?.id?.slice(0,8)}`);
+
+        if (payload.eventType === 'DELETE') {
+          const local = await db.missions.get(payload.old.id);
+          if (!local?._dirty) await db.missions.delete(payload.old.id);
+        } else {
+          const r = payload.new;
+          const local = await db.missions.get(r.id);
+          if (local?._dirty && local.updated_at > r.updated_at) return;
+          await db.missions.put({ ...r, _dirty:0, _deleted:0, _synced_at:new Date().toISOString() });
+        }
+        await refreshLocalUI();
+      }
+    )
+    .subscribe();
+
+  document.getElementById('btnStartRt').textContent = 'Realtime On';
+  addLog('realtime','Realtime','Subscribed to postgres_changes on missions');
+});
+
+// ── CONTROLS ──────────────────────────────────────────────────────────────────
+document.getElementById('btnSync').addEventListener('click', syncMissions);
+document.getElementById('btnSync').disabled = true;
+
+document.getElementById('btnClearLog').addEventListener('click', () => {
+  document.getElementById('logFeed').innerHTML = '';
+  logCount = 0;
+});
+
+// online/offline
+window.addEventListener('online',  () => { addLog('online','Network','Back online'); syncMissions(); });
+window.addEventListener('offline', () => addLog('offline','Network','Went offline'));
+
+// ── STATUS / PROGRESS ─────────────────────────────────────────────────────────
+function setStatus(type, label) {
+  const dot = document.getElementById('statusDot');
+  dot.className = 'status-dot ' + type;
+  document.getElementById('statusLabel').textContent = label;
+  document.getElementById('stripStatus').textContent = label;
+}
+function setProgress(on) {
+  const fill = document.getElementById('progressFill');
+  fill.className = 'sync-progress-fill' + (on ? ' indeterminate' : '');
+  if (!on) fill.style.width = '0';
+}
+
+// ── LOG ────────────────────────────────────────────────────────────────────────
+const PIP = {
+  start:'pip-start', progress:'pip-progress', complete:'pip-complete',
+  error:'pip-error', realtime:'pip-realtime', online:'pip-online', offline:'pip-offline',
+};
+function addLog(type, phase, msg) {
+  logCount++;
+  const feed  = document.getElementById('logFeed');
+  const el    = document.createElement('div');
+  el.className = 'log-entry';
+  const ts = new Date().toLocaleTimeString('en-US',{hour12:false});
+  el.innerHTML = `
+    <div class="log-pip ${PIP[type]||'pip-progress'}"></div>
+    <div class="log-body">
+      <div class="log-type">${esc(phase)}</div>
+      <div class="log-msg">${esc(msg)}</div>
+    </div>
+    <div class="log-time">${ts}</div>`;
+  feed.insertBefore(el, feed.firstChild);
+  while (feed.children.length > 80) feed.removeChild(feed.lastChild);
+}
+
+function esc(s){ return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+refreshLocalUI();
+addLog('start','System','O LIFE Sync Control Plane ready');
+</script>
+</body>
+</html>

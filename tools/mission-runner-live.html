@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Subscription Graveyard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+:root{
+  --bg:#0c0c0c;--surface:#111;--card:#161616;--border:#222;--border2:#2a2a2a;
+  --text:#e8e8e8;--muted:#666;--dim:#333;
+  --red:#ff3b3b;--red-d:#1a0808;--red-bd:#3d1010;
+  --green:#00c97a;--green-d:#051a10;--green-bd:#0d3d22;
+  --amber:#f5a623;--amber-d:#1a1000;--amber-bd:#3d2800;
+  --blue:#4a9eff;
+}
+html,body{height:100%;background:var(--bg);color:var(--text)}
+body{display:flex;flex-direction:column;min-height:100vh}
+
+/* ── HEADER ── */
+header{
+  border-bottom:1px solid var(--border);
+  padding:0 32px;
+  display:flex;align-items:stretch;
+  background:var(--surface);
+  flex-shrink:0;
+}
+.logo{
+  font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--text);padding:18px 0;border-right:1px solid var(--border);
+  padding-right:24px;margin-right:24px;display:flex;align-items:center;gap:10px;
+}
+.logo-icon{
+  width:22px;height:22px;background:var(--red);display:flex;
+  align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;
+  flex-shrink:0;
+}
+.nav{display:flex;align-items:center;gap:0;flex:1}
+.nav-item{
+  font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);padding:0 18px;height:100%;display:flex;align-items:center;
+  border-right:1px solid var(--border);cursor:default;transition:color .15s;
+}
+.nav-item.active{color:var(--text);}
+.nav-item:hover{color:var(--text);}
+.header-right{
+  margin-left:auto;display:flex;align-items:center;gap:16px;
+  font-size:10px;color:var(--muted);letter-spacing:.06em;
+}
+.api-badge{
+  display:flex;align-items:center;gap:6px;
+  border:1px solid var(--border2);border-radius:2px;padding:5px 10px;
+  font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+}
+.api-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);}
+.api-dot.live{background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 2s infinite;}
+@keyframes blink{50%{opacity:.4}}
+
+/* ── LAYOUT ── */
+.main{display:grid;grid-template-columns:1fr 380px;flex:1;overflow:hidden}
+.left{display:flex;flex-direction:column;border-right:1px solid var(--border);overflow-y:auto}
+.right{display:flex;flex-direction:column;overflow-y:auto;background:var(--surface)}
+
+/* ── LEFT: INPUT ── */
+.input-zone{padding:32px;border-bottom:1px solid var(--border)}
+.zone-label{
+  font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:10px;
+}
+.zone-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.mission-id{
+  font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  background:var(--red-d);color:var(--red);border:1px solid var(--red-bd);
+  padding:2px 8px;border-radius:1px;
+}
+
+textarea{
+  width:100%;background:var(--card);border:1px solid var(--border2);
+  border-left:2px solid var(--dim);color:var(--text);
+  font-size:13px;line-height:1.7;padding:16px 18px;
+  resize:vertical;min-height:160px;outline:none;
+  transition:border-left-color .2s;
+}
+textarea:focus{border-left-color:var(--red);}
+textarea::placeholder{color:var(--muted);}
+
+.action-row{display:flex;align-items:center;gap:14px;margin-top:14px}
+
+/* THE BUTTON — exact pattern from brief */
+button[onclick]{
+  font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  background:var(--red);color:#000;border:none;
+  padding:13px 32px;cursor:pointer;transition:all .15s;
+  flex-shrink:0;
+}
+button[onclick]:hover{background:#ff5555}
+button[onclick]:disabled{background:var(--dim);color:var(--muted);cursor:not-allowed}
+button[onclick].loading{background:var(--amber);color:#000}
+
+.shortcut{font-size:10px;color:var(--muted);letter-spacing:.04em}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{height:2px;background:var(--border);overflow:hidden;flex-shrink:0}
+.progress-bar{
+  height:100%;width:0;background:var(--red);
+  transition:width .3s ease;
+}
+.progress-bar.indeterminate{
+  width:40%;animation:sweep 1.2s ease-in-out infinite;
+}
+@keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(300%)} }
+
+/* ── STATUS LINE ── */
+.status-line{
+  padding:10px 32px;border-bottom:1px solid var(--border);
+  font-size:11px;color:var(--muted);letter-spacing:.04em;
+  min-height:38px;display:flex;align-items:center;gap:8px;
+  flex-shrink:0;
+}
+.status-line.err{color:var(--red)}
+.status-line.ok{color:var(--green)}
+.status-line.running{color:var(--amber)}
+
+/* ── RESULTS ── */
+.results-zone{flex:1;padding:0}
+.results-header{
+  padding:16px 32px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:16px;
+  font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+}
+.results-count{
+  margin-left:auto;font-size:9px;color:var(--muted);
+  font-weight:400;letter-spacing:.06em;
+}
+
+table{width:100%;border-collapse:collapse}
+thead th{
+  font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);padding:10px 20px;text-align:left;
+  border-bottom:1px solid var(--border);background:var(--surface);
+  position:sticky;top:0;
+}
+thead th:last-child{text-align:right}
+thead th:nth-child(3){text-align:right}
+
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s;animation:rowIn .25s ease both}
+@keyframes rowIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+tbody tr:hover{background:rgba(255,255,255,.02)}
+tbody td{padding:13px 20px;font-size:13px}
+
+.td-name{font-weight:700;color:var(--text)}
+.td-amt{text-align:right;font-weight:700;font-size:14px}
+.td-annual{text-align:right;font-size:11px;color:var(--muted)}
+
+.badge{
+  font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 9px;display:inline-block;
+}
+.badge-active {background:var(--green-d);color:var(--green);border:1px solid var(--green-bd)}
+.badge-unused {background:var(--red-d);color:var(--red);border:1px solid var(--red-bd)}
+.badge-paused {background:var(--amber-d);color:var(--amber);border:1px solid var(--amber-bd)}
+.badge-unknown{background:var(--card);color:var(--muted);border:1px solid var(--border2)}
+
+tfoot td{padding:14px 20px;font-weight:700;font-size:14px;border-top:2px solid var(--border2)}
+tfoot .tfoot-label{color:var(--muted);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+
+/* ── SAVINGS BANNER ── */
+.savings-banner{
+  margin:0 32px 32px;
+  border:1px solid var(--red-bd);background:var(--red-d);
+  padding:22px 28px;display:none;
+  position:relative;overflow:hidden;
+}
+.savings-banner::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--red);
+}
+.savings-top{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:8px}
+.savings-number{font-size:52px;font-weight:700;color:var(--red);line-height:1;letter-spacing:-.03em}
+.savings-sub{font-size:11px;color:var(--muted);margin-top:6px;letter-spacing:.04em}
+
+/* ── RIGHT: AUDIT + SCHEMA ── */
+.panel-section{padding:24px 24px 0;border-bottom:1px solid var(--border);padding-bottom:24px}
+.panel-label{
+  font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px;
+}
+.panel-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Audit entries */
+.audit-entry{
+  padding:12px 0;border-bottom:1px solid var(--border);
+  animation:rowIn .2s ease;
+}
+.audit-entry:last-child{border-bottom:none}
+.audit-ts{font-size:9px;color:var(--muted);letter-spacing:.06em;margin-bottom:4px}
+.audit-mission-id{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text)}
+.audit-summary{font-size:11px;color:var(--muted);margin-top:3px}
+.audit-saving{font-size:13px;font-weight:700;color:var(--red);margin-top:2px}
+.audit-empty{font-size:11px;color:var(--muted);font-style:italic;padding:8px 0}
+
+/* Raw JSON viewer */
+.json-box{
+  background:var(--card);border:1px solid var(--border);
+  padding:14px 16px;font-size:10px;line-height:1.7;
+  color:var(--muted);white-space:pre-wrap;word-break:break-all;
+  max-height:280px;overflow-y:auto;display:none;
+}
+.json-box.show{display:block}
+.json-toggle{
+  font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);background:none;border:1px solid var(--border);
+  padding:5px 12px;cursor:pointer;margin-top:10px;transition:all .15s;
+}
+.json-toggle:hover{border-color:var(--blue);color:var(--blue)}
+
+.empty-state{
+  padding:48px 32px;text-align:center;
+  font-size:12px;color:var(--muted);letter-spacing:.04em;
+}
+.empty-icon{font-size:32px;margin-bottom:16px;opacity:.3}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);background:var(--surface);
+  padding:10px 32px;display:flex;justify-content:space-between;align-items:center;
+  flex-shrink:0;
+}
+.footer-l{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.footer-r{font-size:9px;color:var(--muted)}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">M1</div>
+    Subscription Graveyard
+  </div>
+  <nav class="nav">
+    <div class="nav-item active">Extract</div>
+    <div class="nav-item">Audit Log</div>
+    <div class="nav-item">Schema</div>
+  </nav>
+  <div class="header-right">
+    <div class="api-badge">
+      <div class="api-dot" id="apiDot"></div>
+      <span id="apiLabel">ANTHROPIC API</span>
+    </div>
+    <div id="dbLabel" style="font-size:9px;letter-spacing:.08em">IDB: —</div>
+  </div>
+</header>
+
+<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="main">
+  <!-- LEFT -->
+  <div class="left">
+    <div class="input-zone">
+      <div class="zone-label">
+        Mission Input
+        <span class="mission-id">subscription_graveyard</span>
+      </div>
+
+      <textarea
+        id="inputText"
+        data-mission="subscription_graveyard"
+        placeholder="Paste bank statement, email receipts, card charges, or a plain list of subscriptions.
+
+The AI will extract every recurring charge with its status and calculate recoverable spend.
+
+Example:
+Netflix $15.99 — last watched 5 months ago
+Spotify $9.99 — using daily
+Adobe CC $54.99 — need for work
+Gym $45/mo — went twice in 2024
+Notion $16/mo — active"
+      ></textarea>
+
+      <div class="action-row">
+        <!--
+          Exact button pattern from brief.
+          data-input is set dynamically from textarea before click fires.
+        -->
+        <button
+          onclick="runMission('subscription_graveyard', this.dataset.input)"
+          id="analyzeBtn"
+          data-input=""
+        >Analyze</button>
+        <span class="shortcut">or Ctrl + Enter</span>
+      </div>
+    </div>
+
+    <div class="status-line" id="statusLine">Ready — paste subscription data above and click Analyze.</div>
+
+    <div class="results-zone">
+      <div class="results-header">
+        Extracted Subscriptions
+        <span class="results-count" id="resultsCount"></span>
+      </div>
+
+      <div id="tableWrap">
+        <div class="empty-state">
+          <div class="empty-icon">◻</div>
+          Run a mission to extract subscriptions from real text.
+        </div>
+      </div>
+
+      <div class="savings-banner" id="savingsBanner">
+        <div class="savings-top">Annual Recoverable Spend</div>
+        <div class="savings-number" id="savingsNumber">$0</div>
+        <div class="savings-sub" id="savingsSub"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="panel-section">
+      <div class="panel-label">Audit Log</div>
+      <div id="auditList"><div class="audit-empty">No missions run yet.</div></div>
+    </div>
+
+    <div class="panel-section" style="margin-top:0">
+      <div class="panel-label" style="margin-top:24px">Last Raw Response</div>
+      <button class="json-toggle" id="jsonToggle" onclick="toggleJson()">Show JSON</button>
+      <pre class="json-box" id="jsonBox"></pre>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-l">O LIFE · M1 Wealth Execution · Mission Runner</div>
+  <div class="footer-r" id="footerTs"></div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── SCHEMA ───────────────────────────────────────────────────────────────
+  const MISSION_SCHEMAS = {
+    subscription_graveyard: {
+      type: 'object',
+      required: ['subscriptions', 'total_savings'],
+      properties: {
+        subscriptions: {
+          type: 'array',
+          items: {
+            type: 'object',
+            required: ['name', 'amount', 'status'],
+            properties: {
+              name:   { type: 'string' },
+              amount: { type: 'number', description: 'Monthly amount in USD' },
+              status: { type: 'string', enum: ['active', 'unused', 'paused', 'unknown'] },
+            },
+          },
+        },
+        total_savings: {
+          type: 'number',
+          description: 'Sum of monthly amounts for unused + paused subscriptions',
+        },
+      },
+    },
+  };
+
+  // ── INDEXEDDB ────────────────────────────────────────────────────────────
+  let idb = null;
+
+  (function openDB() {
+    const req = indexedDB.open('olife_missions', 1);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains('missions')) {
+        const s = db.createObjectStore('missions', { keyPath: 'dbKey', autoIncrement: true });
+        s.createIndex('by_ts', 'timestamp', { unique: false });
+      }
+    };
+    req.onsuccess = e => {
+      idb = e.target.result;
+      document.getElementById('dbLabel').textContent = 'IDB: connected';
+      loadAudit();
+    };
+    req.onerror = () => {
+      document.getElementById('dbLabel').textContent = 'IDB: failed';
+    };
+  })();
+
+  // Matches original: db.missions.add({ id, result, timestamp })
+  const db = {
+    missions: {
+      add(record) {
+        return new Promise((res, rej) => {
+          if (!idb) return rej(new Error('IndexedDB not ready'));
+          const tx  = idb.transaction('missions', 'readwrite');
+          const req = tx.objectStore('missions').add(record);
+          req.onsuccess = () => res(req.result);
+          req.onerror   = () => rej(req.error);
+        });
+      },
+      getAll() {
+        return new Promise((res, rej) => {
+          if (!idb) return res([]);
+          const tx  = idb.transaction('missions', 'readonly');
+          const req = tx.objectStore('missions').index('by_ts').getAll();
+          req.onsuccess = () => res([...req.result].reverse());
+          req.onerror   = () => rej(req.error);
+        });
+      },
+    },
+  };
+
+  // ── WIRE THE BUTTON ───────────────────────────────────────────────────────
+  // The button fires onclick="runMission('subscription_graveyard', this.dataset.input)"
+  // We keep data-input in sync with the textarea so the pattern works exactly as written.
+  const textarea = document.getElementById('inputText');
+  const btn      = document.getElementById('analyzeBtn');
+
+  function syncDataInput() {
+    btn.dataset.input = textarea.value;
+  }
+  textarea.addEventListener('input', syncDataInput);
+  textarea.addEventListener('paste', () => setTimeout(syncDataInput, 0));
+  syncDataInput(); // initial
+
+  // Ctrl+Enter shortcut
+  textarea.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      syncDataInput();
+      btn.click();
+    }
+  });
+
+  // ── runMission ────────────────────────────────────────────────────────────
+  // Exact signature from brief. Called directly by button onclick.
+  // Hits Anthropic API — real data, no mocks, no fallbacks.
+  window.runMission = async function runMission(missionId, inputText) {
+    inputText = (inputText || '').trim();
+    if (!inputText) {
+      setStatus('Paste subscription data before running the mission.', 'err');
+      return;
+    }
+
+    const schema = MISSION_SCHEMAS[missionId];
+    if (!schema) {
+      setStatus(`Unknown mission: ${missionId}`, 'err');
+      return;
+    }
+
+    // Lock UI
+    btn.disabled = true;
+    btn.classList.add('loading');
+    btn.textContent = 'Running…';
+    setProgress(true);
+    setStatus('Calling Anthropic API — claude-sonnet-4-20250514…', 'running');
+    setApiLive(true);
+
+    const start = Date.now();
+
+    try {
+      // ── Real Anthropic API call ────────────────────────────────────────
+      const payload = {
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [
+          {
+            role: 'user',
+            content: [
+              'Extract ALL subscription and recurring charges from the text below.',
+              'Return ONLY valid JSON matching this schema exactly:',
+              JSON.stringify(schema, null, 2),
+              '',
+              'Rules:',
+              '- status must be: active (being used), unused (not used/forgotten), paused, or unknown',
+              '- amount is the monthly USD charge (convert if annual: divide by 12)',
+              '- total_savings = sum of monthly amounts for unused + paused only',
+              '- Include every recurring charge you find',
+              '',
+              'Text to analyze:',
+              inputText,
+            ].join('\n'),
+          },
+        ],
+      };
+
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        throw new Error(errBody?.error?.message || `API error ${res.status}`);
+      }
+
+      const data = await res.json();
+      const raw  = data.content?.[0]?.text ?? '';
+
+      if (!raw) throw new Error('Empty response from API');
+
+      // Strip markdown fences if present
+      const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+      const parsed  = JSON.parse(cleaned);
+
+      if (!Array.isArray(parsed.subscriptions)) {
+        throw new Error('Response missing subscriptions array');
+      }
+
+      const elapsed = Date.now() - start;
+
+      // ── Push to IndexedDB — exact original contract ────────────────────
+      await db.missions.add({
+        id:        missionId,
+        result:    parsed,
+        timestamp: Date.now(),
+      });
+
+      // ── Update UI ──────────────────────────────────────────────────────
+      setStatus(
+        `✓ ${parsed.subscriptions.length} subscription${parsed.subscriptions.length !== 1 ? 's' : ''} extracted · ${elapsed}ms · logged to IndexedDB`,
+        'ok'
+      );
+      renderTable(parsed);
+      showJson(raw);
+      await loadAudit();
+      document.getElementById('footerTs').textContent =
+        'Last run: ' + new Date().toLocaleTimeString('en-US', { hour12: false });
+
+    } catch (err) {
+      setStatus('✗ ' + err.message, 'err');
+      setApiLive(false);
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      btn.textContent = 'Analyze';
+      setProgress(false);
+    }
+  };
+
+  // ── RENDER TABLE ──────────────────────────────────────────────────────────
+  function renderTable(parsed) {
+    const subs = parsed.subscriptions || [];
+    document.getElementById('resultsCount').textContent =
+      subs.length ? `${subs.length} found` : '';
+
+    if (!subs.length) {
+      document.getElementById('tableWrap').innerHTML =
+        '<div class="empty-state"><div class="empty-icon">◻</div>No subscriptions found in the provided text.</div>';
+      hideSavings();
+      return;
+    }
+
+    const totalMonthly = subs.reduce((t, s) => t + (s.amount || 0), 0);
+    const totalAnnual  = totalMonthly * 12;
+    const savings      = parsed.total_savings || 0;
+
+    const rows = subs.map((s, i) => {
+      const status  = (s.status || 'unknown').toLowerCase();
+      const annual  = (s.amount * 12).toFixed(2);
+      const delay   = i * 35;
+      return `<tr style="animation-delay:${delay}ms">
+        <td class="td-name">${esc(s.name)}</td>
+        <td><span class="badge badge-${status}">${status}</span></td>
+        <td class="td-amt">$${Number(s.amount).toFixed(2)}</td>
+        <td class="td-annual">$${annual}/yr</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('tableWrap').innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Status</th>
+            <th style="text-align:right">Monthly</th>
+            <th style="text-align:right">Annual</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+        <tfoot>
+          <tr>
+            <td class="tfoot-label">Total</td>
+            <td></td>
+            <td class="td-amt">$${totalMonthly.toFixed(2)}</td>
+            <td class="td-annual">$${totalAnnual.toFixed(2)}/yr</td>
+          </tr>
+        </tfoot>
+      </table>`;
+
+    if (savings > 0) {
+      const wasteful = subs.filter(s => s.status === 'unused' || s.status === 'paused');
+      document.getElementById('savingsNumber').textContent = '$' + (savings * 12).toFixed(0);
+      document.getElementById('savingsSub').textContent =
+        `${wasteful.length} subscription${wasteful.length !== 1 ? 's' : ''} to cancel · $${savings.toFixed(2)}/mo`;
+      document.getElementById('savingsBanner').style.display = 'block';
+    } else {
+      hideSavings();
+    }
+  }
+
+  function hideSavings() {
+    document.getElementById('savingsBanner').style.display = 'none';
+  }
+
+  // ── AUDIT LOG ─────────────────────────────────────────────────────────────
+  async function loadAudit() {
+    const entries = await db.missions.getAll().catch(() => []);
+    const list    = document.getElementById('auditList');
+    if (!entries.length) {
+      list.innerHTML = '<div class="audit-empty">No missions run yet.</div>';
+      return;
+    }
+    list.innerHTML = entries.slice(0, 15).map(e => {
+      const ts    = new Date(e.timestamp);
+      const count = e.result?.subscriptions?.length ?? 0;
+      const saving= e.result?.total_savings ?? 0;
+      return `<div class="audit-entry">
+        <div class="audit-ts">${ts.toLocaleDateString()} · ${ts.toLocaleTimeString('en-US',{hour12:false})}</div>
+        <div class="audit-mission-id">${esc(e.id)}</div>
+        <div class="audit-summary">${count} subscription${count!==1?'s':''} extracted</div>
+        ${saving > 0 ? `<div class="audit-saving">$${(saving*12).toFixed(0)}/yr recoverable</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  // ── JSON VIEWER ───────────────────────────────────────────────────────────
+  function showJson(raw) {
+    try {
+      document.getElementById('jsonBox').textContent =
+        JSON.stringify(JSON.parse(raw.replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/i,'').trim()), null, 2);
+    } catch {
+      document.getElementById('jsonBox').textContent = raw;
+    }
+  }
+
+  window.toggleJson = function () {
+    const box = document.getElementById('jsonBox');
+    const btn = document.getElementById('jsonToggle');
+    const open = box.classList.toggle('show');
+    btn.textContent = open ? 'Hide JSON' : 'Show JSON';
+  };
+
+  // ── HELPERS ───────────────────────────────────────────────────────────────
+  function setStatus(msg, type) {
+    const el = document.getElementById('statusLine');
+    el.textContent = msg;
+    el.className   = 'status-line' + (type ? ' ' + type : '');
+  }
+
+  function setProgress(running) {
+    const bar = document.getElementById('progressBar');
+    bar.className = 'progress-bar' + (running ? ' indeterminate' : '');
+    if (!running) bar.style.width = '0';
+  }
+
+  function setApiLive(live) {
+    document.getElementById('apiDot').className = 'api-dot' + (live ? ' live' : '');
+    document.getElementById('apiLabel').textContent = live ? 'API LIVE' : 'ANTHROPIC API';
+  }
+
+  function esc(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+})();
+</script>
+</body>
+</html>

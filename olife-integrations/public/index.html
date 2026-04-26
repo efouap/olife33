@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>O LIFE — Live Integrations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#09090b;--s1:#0f0f12;--s2:#141417;--s3:#1a1a1f;
+  --bd:#222228;--bd2:#2c2c35;
+  --text:#9898a8;--hi:#f0f0f5;--dim:#3a3a48;--muted:#5a5a70;
+  --green:#00ff88;--gd:rgba(0,255,136,.08);--gb:rgba(0,255,136,.2);
+  --red:#ff3355;  --rd:rgba(255,51,85,.08);  --rb:rgba(255,51,85,.2);
+  --blue:#3399ff; --bld:rgba(51,153,255,.08);--blb:rgba(51,153,255,.2);
+  --amber:#ffaa00;--ad:rgba(255,170,0,.08);  --ab:rgba(255,170,0,.2);
+  --violet:#aa66ff;--vd:rgba(170,102,255,.08);--vb:rgba(170,102,255,.2);
+  --font-hed:'Barlow Condensed',sans-serif;
+  --font-body:'Barlow',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);overflow:hidden}
+
+/* ── TICKER TAPE TOP ── */
+.ticker-tape{
+  height:28px;background:var(--s1);border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;overflow:hidden;flex-shrink:0;position:relative;
+}
+.ticker-inner{
+  display:flex;gap:0;white-space:nowrap;
+  animation:ticker 40s linear infinite;
+}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tick-item{
+  padding:0 28px;font-family:var(--font-hed);font-size:12px;font-weight:600;
+  letter-spacing:.08em;border-right:1px solid var(--bd);display:flex;align-items:center;gap:8px;
+  height:28px;
+}
+.tick-sym{color:var(--hi)}
+.tick-val{color:var(--green)}
+.tick-chg.neg{color:var(--red)}
+.tick-chg.pos{color:var(--green)}
+
+/* ── HEADER ── */
+header{
+  display:flex;align-items:center;
+  padding:0 28px;height:52px;
+  border-bottom:1px solid var(--bd);background:var(--s1);flex-shrink:0;
+}
+.logo{
+  font-family:var(--font-hed);font-size:22px;font-weight:900;
+  color:var(--hi);letter-spacing:-.01em;
+  display:flex;align-items:center;gap:12px;
+}
+.logo-mark{
+  width:28px;height:28px;background:var(--green);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:900;color:#000;letter-spacing:.02em;
+}
+.logo-sub{font-weight:300;color:var(--muted);font-size:18px}
+.header-center{flex:1;display:flex;justify-content:center;gap:8px}
+.int-badge{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 14px;border:1px solid var(--bd2);
+  font-family:var(--font-hed);font-size:11px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  cursor:pointer;transition:all .15s;
+}
+.int-badge:hover,.int-badge.active{border-color:var(--green);color:var(--green);background:var(--gd)}
+.int-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--dim);flex-shrink:0}
+.int-badge.ok .dot{background:var(--green);box-shadow:0 0 6px var(--green)}
+.int-badge.err .dot{background:var(--red)}
+.int-badge.loading .dot{background:var(--amber);animation:blink .6s infinite}
+@keyframes blink{50%{opacity:.2}}
+
+.header-right{display:flex;align-items:center;gap:10px}
+.btn{
+  font-family:var(--font-hed);font-size:12px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;
+  padding:8px 20px;border:1px solid var(--bd2);
+  background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;
+}
+.btn:hover{border-color:var(--green);color:var(--green);background:var(--gd)}
+.btn.pri{background:var(--green);color:#000;border-color:var(--green)}
+.btn.pri:hover{background:#00ffaa}
+
+/* ── SHELL ── */
+.shell{display:flex;flex-direction:column;height:100vh}
+.main{display:grid;grid-template-columns:repeat(4,1fr);flex:1;overflow:hidden}
+
+/* ── COLUMN ── */
+.col{display:flex;flex-direction:column;border-right:1px solid var(--bd);overflow:hidden}
+.col:last-child{border-right:none}
+.col-head{
+  padding:16px 20px 12px;border-bottom:1px solid var(--bd);flex-shrink:0;
+  background:var(--s1);
+}
+.col-title{
+  font-family:var(--font-hed);font-size:22px;font-weight:800;
+  color:var(--hi);letter-spacing:-.01em;line-height:1;margin-bottom:2px;
+}
+.col-sub{font-family:var(--font-hed);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.col-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.col-btn{
+  font-family:var(--font-hed);font-size:10px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:5px 12px;border:1px solid var(--bd2);
+  background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;
+}
+.col-btn:hover{border-color:currentColor}
+.col-btn.green:hover{color:var(--green);border-color:var(--green);background:var(--gd)}
+.col-btn.blue:hover{color:var(--blue);border-color:var(--blue);background:var(--bld)}
+.col-btn.amber:hover{color:var(--amber);border-color:var(--amber);background:var(--ad)}
+.col-btn.violet:hover{color:var(--violet);border-color:var(--violet);background:var(--vd)}
+.col-btn.red:hover{color:var(--red);border-color:var(--red);background:var(--rd)}
+
+.col-body{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+
+/* ── DATA CARDS ── */
+.dcard{
+  background:var(--s2);border:1px solid var(--bd);
+  padding:12px 14px;
+  animation:cardIn .25s ease both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.dcard-label{
+  font-family:var(--font-hed);font-size:9px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;
+}
+.dcard-val{
+  font-family:var(--font-hed);font-size:28px;font-weight:800;
+  color:var(--hi);line-height:1;letter-spacing:-.02em;
+}
+.dcard-meta{font-family:var(--font-hed);font-size:11px;color:var(--muted);margin-top:4px}
+
+.metric-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+.tag{
+  display:inline-block;padding:2px 8px;
+  font-family:var(--font-hed);font-size:10px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+}
+.tag-green {background:var(--gd);color:var(--green);border:1px solid var(--gb)}
+.tag-red   {background:var(--rd);color:var(--red);  border:1px solid var(--rb)}
+.tag-blue  {background:var(--bld);color:var(--blue); border:1px solid var(--blb)}
+.tag-amber {background:var(--ad);color:var(--amber); border:1px solid var(--ab)}
+
+/* ── LIST ITEMS ── */
+.list-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;background:var(--s2);border:1px solid var(--bd);
+  transition:background .1s;animation:cardIn .2s ease both;
+}
+.list-item:hover{background:var(--s3)}
+.li-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.li-body{flex:1;min-width:0}
+.li-name{font-family:var(--font-hed);font-size:14px;font-weight:700;color:var(--hi);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li-meta{font-family:var(--font-hed);font-size:10px;color:var(--muted);letter-spacing:.04em;margin-top:1px}
+.li-right{text-align:right;flex-shrink:0}
+.li-val{font-family:var(--font-hed);font-size:16px;font-weight:700;color:var(--hi)}
+.li-sub{font-family:var(--font-hed);font-size:10px;color:var(--muted)}
+.pos{color:var(--green)}.neg{color:var(--red)}
+
+/* ── NEWS ── */
+.news-item{
+  padding:12px 14px;background:var(--s2);border:1px solid var(--bd);
+  animation:cardIn .2s ease both;cursor:pointer;transition:background .1s;
+}
+.news-item:hover{background:var(--s3)}
+.news-headline{font-family:var(--font-hed);font-size:14px;font-weight:600;color:var(--hi);line-height:1.3;margin-bottom:6px}
+.news-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.news-source{font-family:var(--font-hed);font-size:10px;color:var(--muted);letter-spacing:.06em}
+.news-time{font-family:var(--font-hed);font-size:10px;color:var(--dim)}
+.sent-bar{height:3px;border-radius:1px;margin-top:8px;background:var(--bd)}
+.sent-fill{height:100%;border-radius:1px;transition:width .4s ease}
+
+/* ── EMPTY / LOADING ── */
+.empty{
+  padding:32px 16px;text-align:center;
+  font-family:var(--font-hed);font-size:12px;color:var(--dim);letter-spacing:.06em;
+}
+.loading-bar{height:2px;background:var(--green);animation:load 1s ease-in-out infinite alternate}
+@keyframes load{from{opacity:.2}to{opacity:1}}
+
+/* ── PLAID LINK BTN ── */
+.plaid-link-btn{
+  width:100%;padding:14px;
+  font-family:var(--font-hed);font-size:14px;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;
+  background:var(--green);color:#000;border:none;cursor:pointer;
+  transition:background .15s;
+}
+.plaid-link-btn:hover{background:#00ffaa}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bd2)}
+
+/* ── STATUS ── */
+.status-line{
+  padding:8px 28px;background:var(--s1);border-top:1px solid var(--bd);flex-shrink:0;
+  display:flex;align-items:center;gap:24px;
+  font-family:var(--font-hed);font-size:11px;letter-spacing:.08em;
+}
+.sl-seg{color:var(--dim)}
+.sl-seg span{color:var(--text)}
+.sl-right{margin-left:auto;color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ── TICKER TAPE ── -->
+<div class="ticker-tape">
+  <div class="ticker-inner" id="tickerInner">
+    <!-- populated by JS -->
+  </div>
+</div>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="logo">
+    <div class="logo-mark">OL</div>
+    O LIFE <span class="logo-sub">/ Integrations</span>
+  </div>
+  <div class="header-center">
+    <div class="int-badge" id="badge-plaid"  onclick="loadPlaid()">  <span class="dot"></span> Plaid  </div>
+    <div class="int-badge" id="badge-alpaca" onclick="loadAlpaca()"> <span class="dot"></span> Alpaca </div>
+    <div class="int-badge" id="badge-gmail"  onclick="loadGmail()">  <span class="dot"></span> Gmail  </div>
+    <div class="int-badge" id="badge-news"   onclick="loadNews()">   <span class="dot"></span> News   </div>
+  </div>
+  <div class="header-right">
+    <button class="btn pri" onclick="loadAll()">↻ Refresh All</button>
+  </div>
+</header>
+
+<!-- ── MAIN GRID ── -->
+<div class="main">
+
+  <!-- ── PLAID ── -->
+  <div class="col">
+    <div class="col-head">
+      <div class="col-title">Plaid</div>
+      <div class="col-sub">Banking · Transactions</div>
+      <div class="col-actions">
+        <button class="col-btn green" onclick="initPlaidLink()">Link Account</button>
+        <button class="col-btn green" onclick="loadBalances()">Balances</button>
+        <button class="col-btn amber" onclick="loadTransactions()">Transactions</button>
+      </div>
+    </div>
+    <div class="col-body" id="plaid-body">
+      <div class="empty">Connect a bank account via Plaid Link</div>
+    </div>
+  </div>
+
+  <!-- ── ALPACA ── -->
+  <div class="col">
+    <div class="col-head">
+      <div class="col-title">Alpaca</div>
+      <div class="col-sub">Portfolio · Markets</div>
+      <div class="col-actions">
+        <button class="col-btn blue" onclick="loadAccount()">Account</button>
+        <button class="col-btn blue" onclick="loadPositions()">Positions</button>
+        <button class="col-btn violet" onclick="loadOrders()">Orders</button>
+        <button class="col-btn amber" onclick="loadClock()">Market Clock</button>
+      </div>
+    </div>
+    <div class="col-body" id="alpaca-body">
+      <div class="empty">Loading portfolio…</div>
+    </div>
+  </div>
+
+  <!-- ── GMAIL ── -->
+  <div class="col">
+    <div class="col-head">
+      <div class="col-title">Gmail</div>
+      <div class="col-sub">Email · Subscriptions</div>
+      <div class="col-actions">
+        <button class="col-btn violet" onclick="gmailAuth()">OAuth Connect</button>
+        <button class="col-btn violet" onclick="loadEmails()">Emails</button>
+        <button class="col-btn red" onclick="loadGmailSubs()">Subscriptions</button>
+      </div>
+    </div>
+    <div class="col-body" id="gmail-body">
+      <div class="empty">Connect Gmail to scan financial emails</div>
+    </div>
+  </div>
+
+  <!-- ── NEWS ── -->
+  <div class="col">
+    <div class="col-head">
+      <div class="col-title">News</div>
+      <div class="col-sub">Market Intelligence</div>
+      <div class="col-actions">
+        <button class="col-btn amber" onclick="loadHeadlines()">Headlines</button>
+        <button class="col-btn amber" onclick="loadMarketNews()">Market</button>
+        <div style="display:flex;gap:4px;align-items:center">
+          <input id="tickerInput" style="background:var(--s2);border:1px solid var(--bd2);color:var(--hi);padding:4px 8px;font-family:var(--font-hed);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;outline:none;width:72px" placeholder="AAPL" />
+          <button class="col-btn amber" onclick="loadTickerNews()">Go</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-body" id="news-body">
+      <div class="empty">Loading headlines…</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── STATUS BAR ── -->
+<div class="status-line">
+  <div class="sl-seg">Plaid: <span id="sl-plaid">—</span></div>
+  <div class="sl-seg">Alpaca: <span id="sl-alpaca">—</span></div>
+  <div class="sl-seg">Gmail: <span id="sl-gmail">—</span></div>
+  <div class="sl-seg">News: <span id="sl-news">—</span></div>
+  <div class="sl-right" id="sl-ts">—</div>
+</div>
+
+</div>
+
+<script>
+const API = 'http://localhost:3001';
+
+// ── FETCH HELPER ─────────────────────────────────────────────────────────────
+async function api(path, opts = {}) {
+  const res = await fetch(API + path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...opts,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+  return data;
+}
+
+function setBody(id, html)  { document.getElementById(id).innerHTML = html; }
+function loading(id)        { setBody(id, '<div class="loading-bar"></div>'); }
+function setStatus(id, txt) { document.getElementById('sl-' + id).textContent = txt; }
+function setBadge(id, cls)  {
+  const b = document.getElementById('badge-' + id);
+  b.className = 'int-badge ' + cls;
+}
+
+function fmt$(n) { return '$' + Number(n || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtPct(n) { return (n >= 0 ? '+' : '') + Number(n || 0).toFixed(2) + '%'; }
+function fmtDate(s) { return s ? new Date(s).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : ''; }
+function esc(s) { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── ALPACA ────────────────────────────────────────────────────────────────────
+async function loadAccount() {
+  setBadge('alpaca','loading');
+  loading('alpaca-body');
+  try {
+    const d = await api('/alpaca/account');
+    const pnlCls  = d.pnl_today >= 0 ? 'pos' : 'neg';
+    const pnlSign = d.pnl_today >= 0 ? '+' : '';
+    setBody('alpaca-body', `
+      <div class="metric-row">
+        <div class="dcard">
+          <div class="dcard-label">Equity</div>
+          <div class="dcard-val">${fmt$(d.equity)}</div>
+        </div>
+        <div class="dcard">
+          <div class="dcard-label">Cash</div>
+          <div class="dcard-val">${fmt$(d.cash)}</div>
+        </div>
+      </div>
+      <div class="metric-row">
+        <div class="dcard">
+          <div class="dcard-label">Today P&L</div>
+          <div class="dcard-val ${pnlCls}">${pnlSign}${fmt$(d.pnl_today)}</div>
+          <div class="dcard-meta ${pnlCls}">${fmtPct(d.pnl_pct)}</div>
+        </div>
+        <div class="dcard">
+          <div class="dcard-label">Buying Power</div>
+          <div class="dcard-val">${fmt$(d.buying_power)}</div>
+        </div>
+      </div>
+      <div class="dcard">
+        <div class="dcard-label">Account Status</div>
+        <div style="margin-top:6px"><span class="tag tag-green">${esc(d.status)}</span></div>
+        <div class="dcard-meta">Day trades: ${d.day_trade_count ?? 0}</div>
+      </div>
+    `);
+    setBadge('alpaca','ok');
+    setStatus('alpaca', fmt$(d.equity));
+  } catch(e) { setBody('alpaca-body',`<div class="empty">${esc(e.message)}</div>`); setBadge('alpaca','err'); }
+}
+
+async function loadPositions() {
+  setBadge('alpaca','loading');
+  loading('alpaca-body');
+  try {
+    const d = await api('/alpaca/positions');
+    if (!d.positions?.length) { setBody('alpaca-body','<div class="empty">No open positions</div>'); return; }
+    const rows = d.positions.map((p,i) => {
+      const cls = p.unrealized_pl >= 0 ? 'pos' : 'neg';
+      return `<div class="list-item" style="animation-delay:${i*30}ms">
+        <div class="li-icon">📈</div>
+        <div class="li-body">
+          <div class="li-name">${esc(p.symbol)}</div>
+          <div class="li-meta">${p.qty} shares · avg ${fmt$(p.avg_price)}</div>
+        </div>
+        <div class="li-right">
+          <div class="li-val">${fmt$(p.market_value)}</div>
+          <div class="li-sub ${cls}">${fmtPct(p.unrealized_plpc)}</div>
+        </div>
+      </div>`;
+    }).join('');
+    const totCls = d.total_pnl >= 0 ? 'pos' : 'neg';
+    setBody('alpaca-body', `
+      <div class="dcard">
+        <div class="dcard-label">Total Value / P&L</div>
+        <div class="dcard-val">${fmt$(d.total_value)}</div>
+        <div class="dcard-meta ${totCls}">${d.total_pnl >= 0 ? '+' : ''}${fmt$(d.total_pnl)} unrealised</div>
+      </div>
+      ${rows}
+    `);
+    setBadge('alpaca','ok');
+    setStatus('alpaca', `${d.positions.length} positions`);
+  } catch(e) { setBody('alpaca-body',`<div class="empty">${esc(e.message)}</div>`); setBadge('alpaca','err'); }
+}
+
+async function loadOrders() {
+  loading('alpaca-body');
+  try {
+    const d = await api('/alpaca/orders');
+    if (!d.orders?.length) { setBody('alpaca-body','<div class="empty">No orders</div>'); return; }
+    const rows = d.orders.map((o,i) => {
+      const tagCls = o.status === 'filled' ? 'tag-green' : o.status === 'canceled' ? 'tag-red' : 'tag-amber';
+      return `<div class="list-item" style="animation-delay:${i*20}ms">
+        <div class="li-icon">${o.side==='buy'?'🟢':'🔴'}</div>
+        <div class="li-body">
+          <div class="li-name">${esc(o.symbol)} <span class="tag tag-blue" style="font-size:9px">${esc(o.side).toUpperCase()}</span></div>
+          <div class="li-meta">${o.qty} · ${esc(o.type)} · ${fmtDate(o.submitted_at)}</div>
+        </div>
+        <div class="li-right">
+          <span class="tag ${tagCls}">${esc(o.status)}</span>
+          ${o.filled_price ? `<div class="li-sub">${fmt$(o.filled_price)}</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+    setBody('alpaca-body', rows);
+  } catch(e) { setBody('alpaca-body',`<div class="empty">${esc(e.message)}</div>`); }
+}
+
+async function loadClock() {
+  try {
+    const d = await api('/alpaca/clock');
+    const isOpen = d.is_open;
+    const nextEvt = isOpen ? `Closes ${new Date(d.next_close).toLocaleTimeString()}` : `Opens ${new Date(d.next_open).toLocaleTimeString()}`;
+    document.getElementById('alpaca-body').insertAdjacentHTML('afterbegin', `
+      <div class="dcard" style="border-color:${isOpen?'var(--gb)':'var(--rb)'}">
+        <div class="dcard-label">Market Status</div>
+        <span class="tag ${isOpen?'tag-green':'tag-red'}">${isOpen?'OPEN':'CLOSED'}</span>
+        <div class="dcard-meta">${nextEvt}</div>
+      </div>
+    `);
+  } catch(e) {}
+}
+
+// ── PLAID ─────────────────────────────────────────────────────────────────────
+async function initPlaidLink() {
+  setBadge('plaid','loading');
+  try {
+    const d = await api('/plaid/link-token', { method:'POST', body: JSON.stringify({ user_id:'olife-user' }) });
+    setBody('plaid-body', `
+      <div class="dcard">
+        <div class="dcard-label">Plaid Link Token</div>
+        <div style="font-size:11px;color:var(--text);word-break:break-all;margin-top:6px;line-height:1.5">${esc(d.link_token.slice(0,60))}…</div>
+        <div class="dcard-meta" style="margin-top:8px">Use this token with Plaid Link SDK in your frontend.</div>
+      </div>
+      <div class="dcard" style="margin-top:8px">
+        <div class="dcard-label">Exchange Public Token</div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <input id="pub-token" style="flex:1;background:var(--s3);border:1px solid var(--bd2);color:var(--hi);padding:6px 10px;font-size:12px;outline:none" placeholder="public-sandbox-xxxx" />
+          <button class="btn" onclick="exchangeToken()">Exchange</button>
+        </div>
+      </div>
+    `);
+    setBadge('plaid','ok');
+    setStatus('plaid','Link ready');
+  } catch(e) { setBody('plaid-body',`<div class="empty">${esc(e.message)}</div>`); setBadge('plaid','err'); }
+}
+
+async function exchangeToken() {
+  const tok = document.getElementById('pub-token')?.value?.trim();
+  if (!tok) return;
+  try {
+    const d = await api('/plaid/exchange', { method:'POST', body: JSON.stringify({ public_token: tok, user_id:'olife-user' }) });
+    setStatus('plaid','Linked ✓');
+    alert(`Linked! Item ID: ${d.item_id}`);
+  } catch(e) { alert('Exchange failed: ' + e.message); }
+}
+
+async function loadBalances() {
+  setBadge('plaid','loading');
+  loading('plaid-body');
+  try {
+    const d = await api('/plaid/balances?user_id=olife-user');
+    const rows = d.accounts.map((a,i) => `
+      <div class="list-item" style="animation-delay:${i*30}ms">
+        <div class="li-icon">🏦</div>
+        <div class="li-body">
+          <div class="li-name">${esc(a.name)}</div>
+          <div class="li-meta">${esc(a.type)} · ${esc(a.subtype)}</div>
+        </div>
+        <div class="li-right">
+          <div class="li-val">${fmt$(a.balance_current)}</div>
+          ${a.balance_available != null ? `<div class="li-sub">avail ${fmt$(a.balance_available)}</div>` : ''}
+        </div>
+      </div>`).join('');
+    setBody('plaid-body', rows || '<div class="empty">No accounts found</div>');
+    setBadge('plaid','ok');
+    const total = d.accounts.reduce((s,a) => s + (a.balance_current||0), 0);
+    setStatus('plaid', fmt$(total));
+  } catch(e) { setBody('plaid-body',`<div class="empty">${esc(e.message)}</div>`); setBadge('plaid','err'); }
+}
+
+async function loadTransactions() {
+  setBadge('plaid','loading');
+  loading('plaid-body');
+  try {
+    const d = await api('/plaid/transactions?user_id=olife-user&days=30');
+    const recRows = (d.recurring||[]).slice(0,5).map((r,i) => `
+      <div class="list-item" style="animation-delay:${i*25}ms">
+        <div class="li-icon">🔁</div>
+        <div class="li-body">
+          <div class="li-name">${esc(r.merchant)}</div>
+          <div class="li-meta">${r.occurrences}× · ${fmt$(r.annual_cost)}/yr</div>
+        </div>
+        <div class="li-right">
+          <div class="li-val neg">${fmt$(r.avg_amount)}</div>
+          <div class="li-sub">per month</div>
+        </div>
+      </div>`).join('');
+    const txRows = (d.transactions||[]).slice(0,15).map((t,i) => `
+      <div class="list-item" style="animation-delay:${(i+5)*20}ms">
+        <div class="li-icon">💳</div>
+        <div class="li-body">
+          <div class="li-name">${esc(t.name)}</div>
+          <div class="li-meta">${esc(t.category)} · ${esc(t.date)}</div>
+        </div>
+        <div class="li-right">
+          <div class="li-val ${t.amount>0?'neg':'pos'}">${t.amount>0?'-':'+'} ${fmt$(Math.abs(t.amount))}</div>
+        </div>
+      </div>`).join('');
+    setBody('plaid-body', `
+      <div class="dcard">
+        <div class="dcard-label">30-Day Spend</div>
+        <div class="dcard-val neg">${fmt$(d.total_spend)}</div>
+        <div class="dcard-meta">${d.total} transactions · ${d.recurring?.length||0} recurring</div>
+      </div>
+      ${recRows ? `<div class="dcard-label" style="padding:8px 0 4px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)">Recurring</div>${recRows}` : ''}
+      <div class="dcard-label" style="padding:8px 0 4px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)">Recent</div>
+      ${txRows}
+    `);
+    setBadge('plaid','ok');
+    setStatus('plaid',`${d.total} txns`);
+  } catch(e) { setBody('plaid-body',`<div class="empty">${esc(e.message)}</div>`); setBadge('plaid','err'); }
+}
+
+// ── GMAIL ─────────────────────────────────────────────────────────────────────
+async function gmailAuth() {
+  try {
+    const d = await api('/gmail/auth?user_id=olife-user');
+    window.open(d.auth_url, '_blank');
+    setBody('gmail-body', `<div class="dcard"><div class="dcard-label">OAuth Initiated</div><div class="dcard-meta" style="margin-top:6px">Complete auth in the new tab, then click Emails or Subscriptions.</div></div>`);
+    setBadge('gmail','ok');
+  } catch(e) { setBody('gmail-body',`<div class="empty">${esc(e.message)}</div>`); setBadge('gmail','err'); }
+}
+
+async function loadEmails() {
+  setBadge('gmail','loading');
+  loading('gmail-body');
+  try {
+    const d = await api('/gmail/messages?user_id=olife-user&max=15');
+    if (!d.messages?.length) { setBody('gmail-body','<div class="empty">No financial emails found (or not connected)</div>'); return; }
+    const rows = d.messages.map((m,i) => `
+      <div class="list-item" style="animation-delay:${i*25}ms">
+        <div class="li-icon">✉️</div>
+        <div class="li-body">
+          <div class="li-name" title="${esc(m.subject)}">${esc(m.subject?.slice(0,40) || '(no subject)')}${m.subject?.length>40?'…':''}</div>
+          <div class="li-meta">${esc(m.from?.split('<')[0]?.trim()?.slice(0,30) || '?')} · ${fmtDate(m.date)}</div>
+        </div>
+      </div>`).join('');
+    setBody('gmail-body', rows);
+    setBadge('gmail','ok');
+    setStatus('gmail', `${d.count} emails`);
+  } catch(e) { setBody('gmail-body',`<div class="empty">${esc(e.message)}</div>`); setBadge('gmail','err'); }
+}
+
+async function loadGmailSubs() {
+  setBadge('gmail','loading');
+  loading('gmail-body');
+  try {
+    const d = await api('/gmail/subscriptions?user_id=olife-user');
+    if (!d.subscriptions?.length) { setBody('gmail-body','<div class="empty">No subscriptions detected in email</div>'); return; }
+    const total = d.subscriptions.reduce((s,x) => s + x.amount, 0);
+    const rows  = d.subscriptions.map((s,i) => `
+      <div class="list-item" style="animation-delay:${i*25}ms">
+        <div class="li-icon">📧</div>
+        <div class="li-body">
+          <div class="li-name">${esc(s.name.slice(0,28))}${s.name.length>28?'…':''}</div>
+          <div class="li-meta">${fmt$(s.annual_estimate)}/yr est.</div>
+        </div>
+        <div class="li-right">
+          <div class="li-val neg">${fmt$(s.amount)}</div>
+          <div class="li-sub">/mo</div>
+        </div>
+      </div>`).join('');
+    setBody('gmail-body', `
+      <div class="dcard">
+        <div class="dcard-label">Detected from ${d.raw_count} emails</div>
+        <div class="dcard-val neg">${fmt$(total)}<span style="font-size:16px;font-weight:400;color:var(--muted)">/mo</span></div>
+        <div class="dcard-meta neg">${fmt$(total*12)}/yr in subscriptions</div>
+      </div>
+      ${rows}
+    `);
+    setBadge('gmail','ok');
+    setStatus('gmail', `${d.subscriptions.length} subs`);
+  } catch(e) { setBody('gmail-body',`<div class="empty">${esc(e.message)}</div>`); setBadge('gmail','err'); }
+}
+
+// ── NEWS ─────────────────────────────────────────────────────────────────────
+function newsHTML(articles) {
+  return articles.map((a, i) => {
+    const sent     = a.sentiment ?? 0;
+    const sentColor = sent > 0.1 ? 'var(--green)' : sent < -0.1 ? 'var(--red)' : 'var(--muted)';
+    const fillW     = Math.abs(sent) * 50;
+    const fillColor = sent > 0.1 ? 'var(--green)' : sent < -0.1 ? 'var(--red)' : 'var(--amber)';
+    const align     = sent >= 0 ? 'left' : 'right';
+    return `<div class="news-item" style="animation-delay:${i*20}ms" onclick="window.open('${esc(a.url)}','_blank')">
+      <div class="news-headline">${esc(a.title)}</div>
+      <div class="news-meta">
+        <span class="news-source">${esc(a.source)}</span>
+        <span class="news-time">${fmtDate(a.published)}</span>
+        <span style="font-family:var(--font-hed);font-size:10px;color:${sentColor};margin-left:auto">${sent > 0.1 ? '↑ Bullish' : sent < -0.1 ? '↓ Bearish' : '→ Neutral'}</span>
+      </div>
+      <div class="sent-bar"><div class="sent-fill" style="width:${fillW}%;background:${fillColor};margin-${align}:50%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+async function loadHeadlines() {
+  setBadge('news','loading');
+  loading('news-body');
+  try {
+    const d = await api('/news/headlines?pageSize=12');
+    setBody('news-body', newsHTML(d.articles || []));
+    setBadge('news','ok');
+    setStatus('news', `${d.articles?.length||0} headlines`);
+    updateTicker(d.articles);
+  } catch(e) { setBody('news-body',`<div class="empty">${esc(e.message)}</div>`); setBadge('news','err'); }
+}
+
+async function loadMarketNews() {
+  setBadge('news','loading');
+  loading('news-body');
+  try {
+    const d = await api('/news/market?pageSize=15');
+    const sentLabel = d.avg_sentiment > 0.1 ? '↑ Bullish' : d.avg_sentiment < -0.1 ? '↓ Bearish' : '→ Neutral';
+    const sentCol   = d.avg_sentiment > 0.1 ? 'var(--green)' : d.avg_sentiment < -0.1 ? 'var(--red)' : 'var(--amber)';
+    setBody('news-body', `
+      <div class="dcard">
+        <div class="dcard-label">Market Sentiment</div>
+        <div style="color:${sentCol};font-family:var(--font-hed);font-size:18px;font-weight:700;margin-top:4px">${sentLabel}</div>
+        <div class="dcard-meta">${d.total} articles analysed</div>
+      </div>
+      ${newsHTML(d.articles || [])}
+    `);
+    setBadge('news','ok');
+    setStatus('news', sentLabel);
+  } catch(e) { setBody('news-body',`<div class="empty">${esc(e.message)}</div>`); setBadge('news','err'); }
+}
+
+async function loadTickerNews() {
+  const sym = (document.getElementById('tickerInput').value || '').trim().toUpperCase();
+  if (!sym) return;
+  setBadge('news','loading');
+  loading('news-body');
+  try {
+    const d = await api(`/news/ticker/${sym}?pageSize=10`);
+    const sigCol = d.signal === 'bullish' ? 'var(--green)' : d.signal === 'bearish' ? 'var(--red)' : 'var(--amber)';
+    setBody('news-body', `
+      <div class="dcard">
+        <div class="dcard-label">${sym} Signal</div>
+        <div style="color:${sigCol};font-family:var(--font-hed);font-size:20px;font-weight:800;margin-top:4px">${esc(d.signal?.toUpperCase())}</div>
+        <div class="dcard-meta">Bullish: ${d.bullish_count} · Bearish: ${d.bearish_count}</div>
+      </div>
+      ${newsHTML(d.articles || [])}
+    `);
+    setBadge('news','ok');
+    setStatus('news', `${sym}: ${d.signal}`);
+  } catch(e) { setBody('news-body',`<div class="empty">${esc(e.message)}</div>`); setBadge('news','err'); }
+}
+
+// ── TICKER TAPE ───────────────────────────────────────────────────────────────
+function updateTicker(articles) {
+  if (!articles?.length) return;
+  const items = articles.slice(0,8).map(a => {
+    const s   = a.sentiment ?? 0;
+    const cls = s > 0.1 ? 'pos' : s < -0.1 ? 'neg' : '';
+    const sym = a.source?.slice(0,6).toUpperCase() || 'NEWS';
+    return `<div class="tick-item">
+      <span class="tick-sym">${esc(sym)}</span>
+      <span class="tick-chg ${cls}">${s > 0.1 ? '▲' : s < -0.1 ? '▼' : '●'} ${s > 0.1 ? 'BULLISH' : s < -0.1 ? 'BEARISH' : 'NEUTRAL'}</span>
+    </div>`;
+  }).join('');
+  const inner = items + items; // doubled for seamless loop
+  document.getElementById('tickerInner').innerHTML = inner;
+}
+
+// ── LOAD ALL ─────────────────────────────────────────────────────────────────
+async function loadAlpaca() { await Promise.allSettled([loadAccount(), loadClock()]); }
+async function loadPlaid()  { await initPlaidLink(); }
+async function loadGmail()  { /* wait for user to auth first */ }
+async function loadNews()   { await loadHeadlines(); }
+async function loadAll()    {
+  document.getElementById('sl-ts').textContent = 'Refreshed ' + new Date().toLocaleTimeString('en-US',{hour12:false});
+  await Promise.allSettled([loadAlpaca(), loadNews()]);
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+loadAll();
+</script>
+</body>
+</html>

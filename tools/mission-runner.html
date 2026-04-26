@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MISSION RUNNER — Subscription Graveyard</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; }
+
+:root {
+  --bg:       #f5f4f0;
+  --paper:    #fdfcfa;
+  --ink:      #0d0d0d;
+  --mid:      #555;
+  --dim:      #999;
+  --rule:     #d0cec8;
+  --rule2:    #e8e6e0;
+  --red:      #c0392b;
+  --red-bg:   #fdf0ee;
+  --green:    #1a7a4a;
+  --green-bg: #eef7f2;
+  --amber:    #b8650a;
+  --amber-bg: #fdf5e8;
+  --col:      18px; /* column gutter */
+}
+
+html { background: var(--bg); }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  max-width: 880px;
+  margin: 0 auto;
+  border-left: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+  min-height: 100vh;
+}
+
+/* ── MASTHEAD ─────────────────────────────────────────────── */
+.masthead {
+  border-bottom: 4px double var(--ink);
+  padding: 14px 28px 10px;
+  text-align: center;
+  position: relative;
+}
+.masthead-date {
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-bottom: 6px;
+}
+.masthead-title {
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.04em;
+  text-transform: uppercase;
+}
+.masthead-title span { color: var(--red); }
+.masthead-sub {
+  font-size: 11px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-top: 6px;
+  border-top: 1px solid var(--rule);
+  padding-top: 7px;
+}
+.masthead-rule { border: none; border-top: 1px solid var(--ink); margin: 8px 0 0; }
+
+/* ── COLUMN GRID ──────────────────────────────────────────── */
+.newspaper {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  border-bottom: 1px solid var(--rule);
+}
+.col-main  { border-right: 1px solid var(--rule); padding: 24px 28px; }
+.col-aside { padding: 24px 20px; }
+
+/* ── SECTION HEADERS ──────────────────────────────────────── */
+.section-hed {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--mid);
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+  padding: 5px 0 4px;
+  margin-bottom: 16px;
+}
+
+/* ── HEADLINE BLOCK ───────────────────────────────────────── */
+.headline {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--rule2);
+  padding-bottom: 12px;
+}
+.deck {
+  font-size: 13px;
+  color: var(--mid);
+  font-style: italic;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+/* ── INPUT AREA ───────────────────────────────────────────── */
+.input-label {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--mid); margin-bottom: 6px;
+  display: block;
+}
+textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--ink);
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink);
+  resize: vertical;
+  min-height: 130px;
+  outline: none;
+  transition: border-color .15s;
+}
+textarea:focus { border-left-color: var(--red); }
+textarea::placeholder { color: var(--dim); font-style: italic; }
+
+/* ── RUN BUTTON ───────────────────────────────────────────── */
+.run-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+.btn-run {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  background: var(--ink); color: #fff;
+  border: none; padding: 11px 28px;
+  cursor: pointer; transition: background .15s;
+}
+.btn-run:hover { background: var(--red); }
+.btn-run:disabled { background: var(--dim); cursor: not-allowed; }
+.run-meta { font-size: 10px; color: var(--dim); letter-spacing: .04em; }
+
+/* ── STATUS TICKER ────────────────────────────────────────── */
+.ticker {
+  margin-top: 14px;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  padding: 8px 12px;
+  font-size: 11px;
+  color: var(--mid);
+  letter-spacing: .04em;
+  min-height: 34px;
+  border-left: 3px solid var(--dim);
+  transition: border-color .2s;
+}
+.ticker.running { border-left-color: var(--amber); color: var(--amber); }
+.ticker.ok      { border-left-color: var(--green); color: var(--green); }
+.ticker.err     { border-left-color: var(--red);   color: var(--red);   }
+
+/* ── RESULTS TABLE ────────────────────────────────────────── */
+.results-wrap { margin-top: 24px; }
+.results-hed {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--mid);
+  border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule);
+  padding: 5px 0 4px; margin-bottom: 0;
+}
+
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--mid);
+  border-bottom: 1px solid var(--rule);
+  padding: 8px 10px; text-align: left;
+  background: var(--bg);
+}
+tbody tr {
+  border-bottom: 1px solid var(--rule2);
+  animation: rowIn .2s ease both;
+}
+@keyframes rowIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+tbody tr:hover { background: #f9f8f5; }
+tbody td { padding: 9px 10px; font-size: 13px; }
+
+.td-name  { font-weight: 700; }
+.td-amt   { font-weight: 700; text-align: right; font-size: 14px; }
+.td-status {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 3px 8px;
+  display: inline-block;
+}
+.status-active   { background: var(--green-bg); color: var(--green); }
+.status-unused   { background: var(--red-bg);   color: var(--red);   }
+.status-paused   { background: var(--amber-bg); color: var(--amber); }
+.status-unknown  { background: var(--bg); color: var(--dim); }
+
+.tfoot-total {
+  border-top: 2px solid var(--ink);
+  background: var(--bg);
+}
+.tfoot-total td { padding: 10px 10px; font-weight: 700; font-size: 14px; }
+
+.empty-row td {
+  padding: 32px 10px; text-align: center;
+  color: var(--dim); font-style: italic; font-size: 13px;
+}
+
+/* ── SAVINGS CALLOUT ──────────────────────────────────────── */
+.savings-box {
+  border: 2px solid var(--ink);
+  padding: 18px 20px;
+  margin-top: 16px;
+  position: relative;
+  background: var(--paper);
+}
+.savings-box::before {
+  content: 'RECOVERABLE';
+  position: absolute; top: -9px; left: 14px;
+  background: var(--paper); padding: 0 6px;
+  font-size: 8px; font-weight: 700;
+  letter-spacing: .2em; color: var(--mid);
+}
+.savings-amount {
+  font-size: 44px; font-weight: 700;
+  line-height: 1; letter-spacing: -.04em;
+  color: var(--red);
+}
+.savings-period { font-size: 11px; color: var(--mid); margin-top: 4px; letter-spacing: .06em; }
+
+/* ── AUDIT LOG (sidebar) ──────────────────────────────────── */
+.audit-entry {
+  border-bottom: 1px solid var(--rule2);
+  padding: 10px 0;
+  animation: rowIn .2s ease;
+}
+.audit-entry:last-child { border-bottom: none; }
+.audit-ts {
+  font-size: 9px; color: var(--dim);
+  letter-spacing: .08em; margin-bottom: 3px;
+}
+.audit-mission {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink);
+}
+.audit-summary { font-size: 11px; color: var(--mid); margin-top: 2px; }
+.audit-savings { font-size: 12px; font-weight: 700; color: var(--red); }
+
+.audit-empty {
+  font-size: 11px; color: var(--dim);
+  font-style: italic; padding: 12px 0;
+}
+
+/* ── SCHEMA PANEL ─────────────────────────────────────────── */
+.schema-box {
+  margin-top: 16px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 12px 14px;
+  font-size: 10px;
+  color: var(--mid);
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* ── FOOTER ───────────────────────────────────────────────── */
+footer {
+  border-top: 4px double var(--ink);
+  padding: 10px 28px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-left  { font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--mid); }
+.footer-right { font-size: 9px; color: var(--dim); }
+</style>
+</head>
+<body>
+
+<!-- ── MASTHEAD ── -->
+<div class="masthead">
+  <div class="masthead-date" id="mastheadDate"></div>
+  <div class="masthead-title">MISSION <span>RUNNER</span></div>
+  <div class="masthead-sub">Structured Extraction · IndexedDB Audit Log · GPT-4o</div>
+  <hr class="masthead-rule">
+</div>
+
+<!-- ── BODY ── -->
+<div class="newspaper">
+
+  <!-- LEFT: Input + Results -->
+  <div class="col-main">
+
+    <div class="section-hed">Mission: Subscription Graveyard</div>
+
+    <div class="headline">Identify &amp; Eliminate<br>Dead Subscriptions</div>
+    <div class="deck">Paste any statement, email, or financial summary below. The mission extracts every recurring charge, classifies its status, and calculates total recoverable spend.</div>
+
+    <label class="input-label" for="inputText">Source Text</label>
+    <textarea id="inputText" placeholder="Paste bank statement, email receipts, or a plain-English list of subscriptions…
+
+Example:
+Netflix $15.99/mo — haven't watched in 4 months
+Spotify $9.99 — active
+Adobe CC $54.99 — using daily
+Gym membership $45/mo — last visit March 2023"></textarea>
+
+    <div class="run-row">
+      <button class="btn-run" id="btnRun">▶ Run Mission</button>
+      <span class="run-meta" id="runMeta">Model: gpt-4o · Bridge: localhost:3000</span>
+    </div>
+
+    <div class="ticker" id="ticker">Ready — enter text and run mission.</div>
+
+    <!-- Results table -->
+    <div class="results-wrap">
+      <div class="results-hed">Extracted Subscriptions</div>
+      <table id="resultsTable">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Status</th>
+            <th style="text-align:right">Monthly</th>
+            <th style="text-align:right">Annual</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody">
+          <tr class="empty-row"><td colspan="4">No results yet. Run a mission to extract subscriptions.</td></tr>
+        </tbody>
+        <tfoot id="resultsFoot"></tfoot>
+      </table>
+    </div>
+
+    <!-- Savings callout -->
+    <div class="savings-box" id="savingsBox" style="display:none">
+      <div class="savings-amount" id="savingsAmount">$0</div>
+      <div class="savings-period">per year in cancellable subscriptions</div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: Audit log + schema -->
+  <div class="col-aside">
+
+    <div class="section-hed">Audit Log</div>
+    <div id="auditList"><div class="audit-empty">No missions run yet.</div></div>
+
+    <div class="section-hed" style="margin-top:28px">Active Schema</div>
+    <div class="schema-box" id="schemaDisplay"></div>
+
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-left">O LIFE Supreme Intelligence · M1 Wealth Execution</div>
+  <div class="footer-right" id="footerRight">IndexedDB: initialising…</div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── SCHEMAS ─────────────────────────────────────────────────────────────
+  const MISSION_SCHEMAS = {
+    subscription_graveyard: {
+      type: 'object',
+      properties: {
+        subscriptions: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              name:   { type: 'string' },
+              amount: { type: 'number' },
+              status: { type: 'string', enum: ['active', 'unused', 'paused', 'unknown'] },
+            },
+            required: ['name', 'amount', 'status'],
+          },
+        },
+        total_savings: { type: 'number' },
+      },
+      required: ['subscriptions', 'total_savings'],
+    },
+  };
+
+  // ── DISPLAY DATE ─────────────────────────────────────────────────────────
+  document.getElementById('mastheadDate').textContent =
+    new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' }).toUpperCase();
+
+  // ── SCHEMA PREVIEW ───────────────────────────────────────────────────────
+  document.getElementById('schemaDisplay').textContent =
+    JSON.stringify(MISSION_SCHEMAS.subscription_graveyard, null, 2);
+
+  // ── INDEXEDDB ────────────────────────────────────────────────────────────
+  let db = null;
+  const DB_NAME = 'olife_missions';
+  const DB_VER  = 1;
+
+  function openDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, DB_VER);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('missions')) {
+          const store = db.createObjectStore('missions', { keyPath: 'dbKey', autoIncrement: true });
+          store.createIndex('by_id',  'id',        { unique: false });
+          store.createIndex('by_ts',  'timestamp', { unique: false });
+        }
+      };
+      req.onsuccess = (e) => resolve(e.target.result);
+      req.onerror   = (e) => reject(e.target.error);
+    });
+  }
+
+  // Minimal Dexie-style wrapper matching original `db.missions.add()`
+  const dbProxy = {
+    missions: {
+      add(record) {
+        return new Promise((resolve, reject) => {
+          if (!db) return reject(new Error('DB not ready'));
+          const tx  = db.transaction('missions', 'readwrite');
+          const req = tx.objectStore('missions').add(record);
+          req.onsuccess = () => resolve(req.result);
+          req.onerror   = () => reject(req.error);
+        });
+      },
+      getAll() {
+        return new Promise((resolve, reject) => {
+          if (!db) return resolve([]);
+          const tx  = db.transaction('missions', 'readonly');
+          const req = tx.objectStore('missions').index('by_ts').getAll();
+          req.onsuccess = () => resolve(req.result.reverse()); // newest first
+          req.onerror   = () => reject(req.error);
+        });
+      },
+    },
+  };
+
+  openDB()
+    .then((handle) => {
+      db = handle;
+      document.getElementById('footerRight').textContent = 'IndexedDB: connected · ' + DB_NAME;
+      loadAuditLog();
+    })
+    .catch((err) => {
+      document.getElementById('footerRight').textContent = 'IndexedDB: ' + err.message;
+    });
+
+  // ── TICKER HELPER ────────────────────────────────────────────────────────
+  function setTicker(msg, state = '') {
+    const el = document.getElementById('ticker');
+    el.textContent = msg;
+    el.className   = 'ticker' + (state ? ' ' + state : '');
+  }
+
+  // ── runMission ────────────────────────────────────────────────────────────
+  // Full implementation of the provided stub — with schema validation,
+  // error handling, and IndexedDB persistence.
+  async function runMission(missionId, inputText) {
+    const schema = MISSION_SCHEMAS[missionId];
+    if (!schema) throw new Error(`Unknown mission: ${missionId}`);
+
+    const payload = {
+      model: 'gpt-4o',
+      messages: [
+        {
+          role: 'system',
+          content: [
+            'You are a financial data extraction engine.',
+            'Extract ALL subscription/recurring charges from the user text.',
+            'Return ONLY valid JSON matching the schema exactly.',
+            'Status must be one of: active, unused, paused, unknown.',
+            '"unused" = clearly not being used. "active" = actively used.',
+            'total_savings = sum of monthly amounts for unused + paused subscriptions.',
+            'Schema: ' + JSON.stringify(schema),
+          ].join('\n'),
+        },
+        { role: 'user', content: inputText },
+      ],
+      response_format: { type: 'json_object', schema },
+    };
+
+    const res = await fetch('http://localhost:3000/v1/chat', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    // Support both bridge response shapes
+    const raw = data.content
+      ?? data.choices?.[0]?.message?.content
+      ?? null;
+
+    if (!raw) throw new Error('Empty response from bridge');
+
+    const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+
+    // Validate required fields
+    if (!Array.isArray(parsed.subscriptions)) {
+      throw new Error('Response missing subscriptions array');
+    }
+
+    // Push to IndexedDB audit log — exact original contract
+    await dbProxy.missions.add({
+      id:        missionId,
+      result:    parsed,
+      timestamp: Date.now(),
+    });
+
+    return parsed;
+  }
+
+  // ── DEMO / OFFLINE FALLBACK ───────────────────────────────────────────────
+  // When bridge is unreachable, parse the textarea directly for demo purposes.
+  async function runMissionDemo(missionId, inputText) {
+    await new Promise(r => setTimeout(r, 900)); // simulate latency
+
+    // Simple heuristic extraction from plain text
+    const lines = inputText.split('\n').filter(l => l.trim());
+    const subs  = [];
+    const patterns = [
+      /^(.+?)\s+\$?([\d.]+)\s*(?:\/mo|\/month|per month)?.*?—?\s*(.*)?$/i,
+      /^(.+?)\s*[-–]\s*\$?([\d.]+)\s*(?:\/mo)?/i,
+    ];
+
+    lines.forEach(line => {
+      for (const pat of patterns) {
+        const m = line.match(pat);
+        if (m) {
+          const name   = m[1].trim();
+          const amount = parseFloat(m[2]);
+          const hint   = (m[3] || '').toLowerCase();
+          let status = 'unknown';
+          if (hint.includes('active') || hint.includes('using') || hint.includes('daily') || hint.includes('weekly')) status = 'active';
+          else if (hint.includes('haven') || hint.includes('never') || hint.includes('last visit') || hint.includes('months ago')) status = 'unused';
+          else if (hint.includes('pause') || hint.includes('cancel')) status = 'paused';
+          if (name && !isNaN(amount)) { subs.push({ name, amount, status }); break; }
+        }
+      }
+    });
+
+    if (!subs.length) throw new Error('Could not parse any subscriptions from text. Add amounts like "$9.99".');
+
+    const wasteful    = subs.filter(s => s.status === 'unused' || s.status === 'paused');
+    const total_savings = wasteful.reduce((t, s) => t + s.amount, 0);
+    const parsed = { subscriptions: subs, total_savings: Math.round(total_savings * 100) / 100 };
+
+    await dbProxy.missions.add({ id: missionId, result: parsed, timestamp: Date.now() });
+    return parsed;
+  }
+
+  // ── RENDER RESULTS ────────────────────────────────────────────────────────
+  function renderResults(parsed) {
+    const subs = parsed.subscriptions || [];
+    const body = document.getElementById('resultsBody');
+    const foot = document.getElementById('resultsFoot');
+
+    if (!subs.length) {
+      body.innerHTML = '<tr class="empty-row"><td colspan="4">No subscriptions detected in response.</td></tr>';
+      foot.innerHTML = '';
+      return;
+    }
+
+    body.innerHTML = subs.map((s, i) => {
+      const statusCls = 'status-' + (s.status || 'unknown');
+      const annual    = (s.amount * 12).toFixed(2);
+      return `<tr style="animation-delay:${i * 40}ms">
+        <td class="td-name">${esc(s.name)}</td>
+        <td><span class="td-status ${statusCls}">${esc(s.status || '?')}</span></td>
+        <td class="td-amt">$${Number(s.amount).toFixed(2)}</td>
+        <td class="td-amt" style="color:var(--mid)">$${annual}</td>
+      </tr>`;
+    }).join('');
+
+    const totalMonthly = subs.reduce((t, s) => t + (s.amount || 0), 0);
+    const totalAnnual  = totalMonthly * 12;
+    foot.innerHTML = `<tr class="tfoot-total">
+      <td colspan="2">TOTAL</td>
+      <td class="td-amt">$${totalMonthly.toFixed(2)}/mo</td>
+      <td class="td-amt">$${totalAnnual.toFixed(2)}/yr</td>
+    </tr>`;
+
+    // Savings callout
+    const savings = parsed.total_savings || 0;
+    if (savings > 0) {
+      document.getElementById('savingsAmount').textContent = '$' + (savings * 12).toFixed(0);
+      document.getElementById('savingsBox').style.display = '';
+    } else {
+      document.getElementById('savingsBox').style.display = 'none';
+    }
+  }
+
+  // ── RENDER AUDIT LOG ──────────────────────────────────────────────────────
+  async function loadAuditLog() {
+    const entries = await dbProxy.missions.getAll().catch(() => []);
+    renderAudit(entries);
+  }
+
+  function renderAudit(entries) {
+    const list = document.getElementById('auditList');
+    if (!entries.length) {
+      list.innerHTML = '<div class="audit-empty">No missions run yet.</div>';
+      return;
+    }
+    list.innerHTML = entries.slice(0, 12).map(entry => {
+      const ts      = new Date(entry.timestamp);
+      const timeStr = ts.toLocaleTimeString('en-US', { hour12: false });
+      const dateStr = ts.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const count   = entry.result?.subscriptions?.length ?? 0;
+      const savings = entry.result?.total_savings ?? 0;
+      return `<div class="audit-entry">
+        <div class="audit-ts">${dateStr} · ${timeStr}</div>
+        <div class="audit-mission">${entry.id}</div>
+        <div class="audit-summary">${count} subscription${count !== 1 ? 's' : ''} extracted</div>
+        ${savings > 0 ? `<div class="audit-savings">$${(savings * 12).toFixed(0)}/yr recoverable</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  // ── RUN BUTTON ────────────────────────────────────────────────────────────
+  document.getElementById('btnRun').addEventListener('click', async () => {
+    const inputText = document.getElementById('inputText').value.trim();
+    if (!inputText) { setTicker('Please enter source text first.', 'err'); return; }
+
+    const btn = document.getElementById('btnRun');
+    btn.disabled = true;
+    setTicker('Connecting to bridge at localhost:3000…', 'running');
+
+    const start = Date.now();
+
+    try {
+      let parsed;
+      try {
+        parsed = await runMission('subscription_graveyard', inputText);
+        const ms = Date.now() - start;
+        setTicker(`✓ Mission complete in ${ms}ms · ${parsed.subscriptions.length} subscriptions extracted · Logged to IndexedDB`, 'ok');
+      } catch (bridgeErr) {
+        // Bridge unreachable — fall back to client-side demo extraction
+        setTicker('Bridge offline — running local extraction demo…', 'running');
+        parsed = await runMissionDemo('subscription_graveyard', inputText);
+        const ms = Date.now() - start;
+        setTicker(`✓ Demo extraction complete in ${ms}ms · ${parsed.subscriptions.length} items · Logged to IndexedDB (bridge was offline)`, 'ok');
+      }
+
+      renderResults(parsed);
+      await loadAuditLog();
+
+    } catch (err) {
+      setTicker('✗ ' + err.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  // Allow Ctrl+Enter to submit
+  document.getElementById('inputText').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      document.getElementById('btnRun').click();
+    }
+  });
+
+  function esc(str) {
+    return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+})();
+</script>
+</body>
+</html>

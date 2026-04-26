@@ -1,0 +1,105 @@
+version: "3.9"
+
+# ============================================================
+# O LIFE Supreme Intelligence OS — Full Stack
+# ============================================================
+
+networks:
+  olife-net:
+    driver: bridge
+
+volumes:
+  redis-data:
+  postgres-data:
+
+services:
+
+  # ── AI Bridge — provider aggregator & OmniParallel hub ──────
+  ai-bridge:
+    build: ./ai-bridge
+    ports:
+      - "3000:3000"
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks: [olife-net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ── Redis — caching, pub/sub, mission log ───────────────────
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis-data:/data
+    networks: [olife-net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Supabase Postgres — persistent structured data ──────────
+  supabase-db:
+    image: supabase/postgres:15.1.0.147
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: olife
+      POSTGRES_USER: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./supabase/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    networks: [olife-net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  # ── Swarm Agencies — 10 AI agent microservices ──────────────
+  agencies:
+    build: ./swarm-agencies
+    ports:
+      - "8000:8000"   # Savings       (M1 Wealth)
+      - "8080:8080"   # Health        (M5 Wellbeing)
+      - "8090:8090"   # Dating        (M4 Connection)
+      - "8095:8095"   # Quantum       (M6 Truth)
+      - "8101:8101"   # Prediction    (M6 Foresight)
+      - "8110:8110"   # Concierge     (M2 Efficiency)
+      - "8120:8120"   # Comms/Edu     (M2 Learning)
+      - "8130:8130"   # Trading       (M1 Markets)
+      - "8140:8140"   # Booking       (M2 Travel)
+      - "8150:8150"   # Delivery      (M2 Procurement)
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+      - AI_BRIDGE_URL=http://ai-bridge:3000
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      ai-bridge:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks: [olife-net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

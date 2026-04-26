@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O LIFE — Swarm Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:         #03080d;
+  --bg1:        #060f18;
+  --bg2:        #091520;
+  --border:     #0e2233;
+  --border2:    #142d44;
+  --muted:      #2a5270;
+  --text:       #8bbdd6;
+  --bright:     #d6edf8;
+  --idle:       #1a8c6e;
+  --idle-glow:  #00ffb2;
+  --active:     #0a7acc;
+  --active-glow:#40c4ff;
+  --error:      #c0392b;
+  --error-glow: #ff6b55;
+  --offline:    #1e3347;
+  --amber:      #e8a830;
+  --font-ui:    'Outfit', sans-serif;
+  --font-mono:  'Fragment Mono', monospace;
+}
+
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-ui); overflow: hidden; }
+
+/* ── Atmospheric background ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 20%, #00c6ff08 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 85% 80%, #00ff9508 0%, transparent 70%),
+    radial-gradient(ellipse 30% 30% at 50% 50%, #0a2030 0%, transparent 80%);
+}
+
+/* ── Layout ── */
+.shell { display: grid; grid-template-rows: 60px 1fr; height: 100vh; }
+
+/* ── Header ── */
+header {
+  display: flex; align-items: center; gap: 20px; padding: 0 32px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(6,15,24,.9);
+  backdrop-filter: blur(12px);
+  z-index: 10;
+}
+.wordmark {
+  font-size: 18px; font-weight: 700; color: var(--bright);
+  letter-spacing: -.03em;
+}
+.wordmark em { color: var(--idle-glow); font-style: normal; }
+.tagline { font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.spacer { flex: 1; }
+
+.conn-badge {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+  padding: 5px 14px; border: 1px solid var(--border2); border-radius: 20px;
+  transition: all .3s;
+}
+.conn-badge.live { color: var(--idle-glow); border-color: #00ffb230; }
+.conn-badge .orb {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--muted); transition: all .3s;
+}
+.conn-badge.live .orb {
+  background: var(--idle-glow);
+  box-shadow: 0 0 10px var(--idle-glow);
+  animation: breathe 3s ease-in-out infinite;
+}
+@keyframes breathe { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+.header-stat { text-align: right; }
+.header-stat-val { font-family: var(--font-mono); font-size: 16px; color: var(--bright); line-height: 1; }
+.header-stat-lbl { font-size: 9px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-top: 2px; }
+
+/* ── Body grid ── */
+.body { display: grid; grid-template-columns: 1fr 320px; overflow: hidden; }
+
+/* ── Agent grid ── */
+.agent-grid-wrap { overflow-y: auto; padding: 28px 32px; }
+.grid-header {
+  display: flex; align-items: baseline; gap: 16px; margin-bottom: 24px;
+}
+.grid-title { font-size: 13px; font-weight: 600; color: var(--bright); letter-spacing: -.01em; }
+.grid-sub { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+/* ── Agent card ── */
+.agent-card {
+  position: relative;
+  background: var(--bg1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 18px 14px;
+  cursor: default;
+  transition: border-color .3s, transform .2s;
+  overflow: hidden;
+}
+.agent-card::before {
+  content: '';
+  position: absolute; inset: 0; border-radius: 12px;
+  opacity: 0; transition: opacity .3s;
+  pointer-events: none;
+}
+.agent-card.idle::before   { background: radial-gradient(ellipse at 50% 0%, #00ffb210, transparent 70%); }
+.agent-card.active::before { background: radial-gradient(ellipse at 50% 0%, #40c4ff18, transparent 70%); }
+.agent-card.error::before  { background: radial-gradient(ellipse at 50% 0%, #ff6b5512, transparent 70%); }
+
+.agent-card.idle   { border-color: #1a8c6e50; }
+.agent-card.active { border-color: #0a7acc60; }
+.agent-card.error  { border-color: #c0392b60; }
+.agent-card.offline{ border-color: var(--border); opacity: .5; }
+
+.agent-card::before { opacity: 1; }
+.agent-card:hover { transform: translateY(-2px); }
+.agent-card.active { animation: activePulse 2s ease-in-out infinite; }
+@keyframes activePulse {
+  0%,100%{ box-shadow: 0 0 0 0 transparent; }
+  50%    { box-shadow: 0 0 20px #40c4ff18; }
+}
+
+/* Status pip */
+.card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.status-pip {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  background: var(--offline);
+  transition: background .3s, box-shadow .3s;
+}
+.idle    .status-pip { background: var(--idle-glow); box-shadow: 0 0 10px var(--idle-glow); }
+.active  .status-pip { background: var(--active-glow); box-shadow: 0 0 14px var(--active-glow); animation: pipPulse 1s infinite; }
+.error   .status-pip { background: var(--error-glow); box-shadow: 0 0 10px var(--error-glow); }
+@keyframes pipPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
+
+.agent-name { font-size: 14px; font-weight: 600; color: var(--bright); text-transform: capitalize; }
+.mission-tag {
+  margin-left: auto; font-family: var(--font-mono); font-size: 9px;
+  padding: 2px 8px; border-radius: 10px; font-weight: 500;
+  background: var(--bg2); color: var(--muted); border: 1px solid var(--border2);
+}
+
+.agent-desc { font-size: 11px; color: var(--muted); line-height: 1.5; margin-bottom: 14px; min-height: 32px; }
+
+.card-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+.cstat { background: var(--bg2); border-radius: 6px; padding: 7px 8px; }
+.cstat-val { font-family: var(--font-mono); font-size: 13px; color: var(--bright); line-height: 1; }
+.cstat-lbl { font-size: 8px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-top: 2px; }
+
+/* Queue bar */
+.queue-row { display: flex; align-items: center; gap: 8px; }
+.queue-lbl { font-family: var(--font-mono); font-size: 10px; color: var(--muted); white-space: nowrap; }
+.queue-track { flex: 1; height: 3px; background: var(--border2); border-radius: 2px; overflow: hidden; }
+.queue-fill {
+  height: 100%; border-radius: 2px;
+  background: var(--idle-glow);
+  transition: width .4s ease;
+}
+.active .queue-fill { background: var(--active-glow); }
+.error  .queue-fill { background: var(--error-glow); }
+
+/* Port badge */
+.port-badge {
+  position: absolute; top: 14px; right: 14px;
+  font-family: var(--font-mono); font-size: 9px; color: var(--muted);
+  opacity: .5;
+}
+
+/* ── Right panel — event log ── */
+.log-panel {
+  border-left: 1px solid var(--border);
+  background: var(--bg1);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.log-header {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.log-title { font-size: 13px; font-weight: 600; color: var(--bright); margin-bottom: 2px; }
+.log-sub { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+
+.log-feed { flex: 1; overflow-y: auto; padding: 10px 0; }
+
+.log-event {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 9px 18px;
+  border-bottom: 1px solid #0a1e2e;
+  animation: slideIn .2s ease;
+  transition: background .15s;
+}
+.log-event:hover { background: var(--bg2); }
+@keyframes slideIn { from { opacity: 0; transform: translateX(8px); } to { opacity: 1; transform: none; } }
+
+.evt-pip {
+  width: 6px; height: 6px; border-radius: 50%; margin-top: 5px; flex-shrink: 0;
+}
+.evt-status .evt-pip   { background: var(--active-glow); }
+.evt-call .evt-pip     { background: var(--idle-glow); }
+.evt-error .evt-pip    { background: var(--error-glow); }
+.evt-ping .evt-pip     { background: var(--muted); }
+.evt-snapshot .evt-pip { background: var(--amber); }
+
+.evt-body { flex: 1; min-width: 0; }
+.evt-agent { font-size: 11px; font-weight: 600; color: var(--bright); text-transform: capitalize; }
+.evt-detail { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.evt-time { font-family: var(--font-mono); font-size: 9px; color: var(--muted); white-space: nowrap; margin-top: 4px; }
+.evt-latency { font-family: var(--font-mono); font-size: 10px; color: var(--idle-glow); margin-left: auto; flex-shrink: 0; align-self: center; }
+
+/* ── Bottom summary bar ── */
+.summary-bar {
+  border-top: 1px solid var(--border);
+  padding: 10px 18px;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8px; flex-shrink: 0;
+}
+.sbar-stat { text-align: center; }
+.sbar-val { font-family: var(--font-mono); font-size: 14px; color: var(--bright); }
+.sbar-lbl { font-size: 9px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-top: 1px; }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+/* Entry animation for cards */
+.agent-card { animation: cardIn .4s ease both; }
+@keyframes cardIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div>
+      <div class="wordmark">O <em>LIFE</em> Swarm</div>
+      <div class="tagline">Supreme Intelligence — Agent Layer v2.33</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="header-stat">
+      <div class="header-stat-val" id="hActiveCount">—</div>
+      <div class="header-stat-lbl">Active</div>
+    </div>
+    <div class="header-stat">
+      <div class="header-stat-val" id="hTotalCalls">—</div>
+      <div class="header-stat-lbl">Total calls</div>
+    </div>
+    <div class="header-stat">
+      <div class="header-stat-val" id="hQueue">—</div>
+      <div class="header-stat-lbl">Queued</div>
+    </div>
+    <div class="conn-badge" id="connBadge">
+      <div class="orb"></div>
+      <span id="connLabel">CONNECTING</span>
+    </div>
+  </header>
+
+  <div class="body">
+    <!-- Agent cards -->
+    <div class="agent-grid-wrap">
+      <div class="grid-header">
+        <div class="grid-title">Agent Swarm</div>
+        <div class="grid-sub" id="lastPoll">—</div>
+      </div>
+      <div class="agent-grid" id="agentGrid">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <!-- Event log -->
+    <div class="log-panel">
+      <div class="log-header">
+        <div class="log-title">Event Stream</div>
+        <div class="log-sub" id="evtCount">0 events</div>
+      </div>
+      <div class="log-feed" id="logFeed"></div>
+      <div class="summary-bar">
+        <div class="sbar-stat"><div class="sbar-val" id="sbCalls">0</div><div class="sbar-lbl">Calls</div></div>
+        <div class="sbar-stat"><div class="sbar-val" id="sbErrors">0</div><div class="sbar-lbl">Errors</div></div>
+        <div class="sbar-stat"><div class="sbar-val" id="sbAgents">0</div><div class="sbar-lbl">Agents</div></div>
+        <div class="sbar-stat"><div class="sbar-val" id="sbUptime">—</div><div class="sbar-lbl">Uptime</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── State ─────────────────────────────────────────────────────────────────
+  const agents   = {};     // name → agent state dict
+  let   evtCount = 0;
+  let   wsRetries = 0;
+  const startTime = Date.now();
+
+  // ── WebSocket ──────────────────────────────────────────────────────────────
+  function connect() {
+    const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+    const ws    = new WebSocket(`${proto}://${location.host}/ws/status`);
+
+    ws.onopen = () => {
+      wsRetries = 0;
+      setConn(true);
+    };
+    ws.onmessage = (e) => {
+      try { handle(JSON.parse(e.data)); } catch (_) {}
+    };
+    ws.onclose = () => {
+      setConn(false);
+      const d = Math.min(500 * Math.pow(1.5, wsRetries++), 8000);
+      setTimeout(connect, d);
+    };
+    ws.onerror = () => ws.close();
+
+    // Keep-alive ping every 30 s
+    const ping = setInterval(() => {
+      if (ws.readyState === 1) ws.send('ping');
+      else clearInterval(ping);
+    }, 30_000);
+  }
+
+  function setConn(live) {
+    const badge = document.getElementById('connBadge');
+    const lbl   = document.getElementById('connLabel');
+    badge.className = 'conn-badge' + (live ? ' live' : '');
+    lbl.textContent = live ? 'LIVE' : 'RECONNECTING';
+  }
+
+  // ── Event handler ──────────────────────────────────────────────────────────
+  function handle(msg) {
+    if (msg.type === 'snapshot') {
+      if (msg.agents) msg.agents.forEach(applyAgent);
+      updateHeader(msg);
+      addEvent(msg);
+    } else if (msg.type === 'status') {
+      const a = agents[msg.agent];
+      if (a) { a.status = msg.status; a.task_queue = msg.task_queue || 0; }
+      renderCard(msg.agent);
+      updateHeader();
+      addEvent(msg);
+    } else if (msg.type === 'call') {
+      const a = agents[msg.agent];
+      if (a) { a.metrics = a.metrics || {}; a.metrics.calls = (a.metrics.calls||0)+1; }
+      addEvent(msg);
+      refreshSummary();
+    } else if (msg.type === 'ping') {
+      updateHeader(msg);
+    } else if (msg.type === 'error') {
+      addEvent(msg);
+    }
+    document.getElementById('lastPoll').textContent = `updated ${new Date().toLocaleTimeString()}`;
+  }
+
+  function applyAgent(data) {
+    agents[data.name] = data;
+    renderCard(data.name);
+  }
+
+  // ── Render single card ─────────────────────────────────────────────────────
+  function renderCard(name) {
+    const a   = agents[name];
+    if (!a) return;
+    const grid = document.getElementById('agentGrid');
+    let   card = document.getElementById(`card-${name}`);
+
+    const status   = a.status || 'offline';
+    const m        = a.metrics || {};
+    const queuePct = Math.min((a.task_queue || 0) * 20, 100);
+
+    const html = `
+      <div class="status-pip"></div>
+      <div class="agent-name">${name}</div>
+      <div class="mission-tag">${a.mission || '?'}</div>
+    `;
+    const inner = `
+      <div class="port-badge">:${a.port || ''}</div>
+      <div class="card-top">
+        <div class="status-pip"></div>
+        <div class="agent-name">${name}</div>
+        <div class="mission-tag">${a.mission || '?'}</div>
+      </div>
+      <div class="agent-desc">${a.description || ''}</div>
+      <div class="card-stats">
+        <div class="cstat">
+          <div class="cstat-val">${fmt(m.calls || 0)}</div>
+          <div class="cstat-lbl">Calls</div>
+        </div>
+        <div class="cstat">
+          <div class="cstat-val">${m.avg_latency_ms ? m.avg_latency_ms + 'ms' : '—'}</div>
+          <div class="cstat-lbl">Avg lat</div>
+        </div>
+        <div class="cstat">
+          <div class="cstat-val">${m.success_rate != null ? m.success_rate + '%' : '—'}</div>
+          <div class="cstat-lbl">Success</div>
+        </div>
+      </div>
+      <div class="queue-row">
+        <div class="queue-lbl">queue ${a.task_queue || 0}</div>
+        <div class="queue-track"><div class="queue-fill" style="width:${queuePct}%"></div></div>
+      </div>
+    `;
+
+    if (!card) {
+      card = document.createElement('div');
+      card.id = `card-${name}`;
+      card.className = `agent-card ${status}`;
+      card.innerHTML = inner;
+      grid.appendChild(card);
+    } else {
+      card.className = `agent-card ${status}`;
+      card.innerHTML = inner;
+    }
+  }
+
+  // ── Header stats ───────────────────────────────────────────────────────────
+  function updateHeader(msg) {
+    const all      = Object.values(agents);
+    const active   = all.filter(a => a.status === 'active').length;
+    const calls    = all.reduce((s, a) => s + (a.metrics?.calls || 0), 0);
+    const queue    = msg?.task_queue ?? all.reduce((s, a) => s + (a.task_queue || 0), 0);
+
+    document.getElementById('hActiveCount').textContent = active;
+    document.getElementById('hTotalCalls').textContent  = fmt(calls);
+    document.getElementById('hQueue').textContent       = queue;
+  }
+
+  function refreshSummary() {
+    const all = Object.values(agents);
+    document.getElementById('sbCalls').textContent  = fmt(all.reduce((s,a)=>s+(a.metrics?.calls||0),0));
+    document.getElementById('sbErrors').textContent = all.reduce((s,a)=>s+(a.metrics?.errors||0),0);
+    document.getElementById('sbAgents').textContent = all.length;
+    document.getElementById('sbUptime').textContent = fmtUptime((Date.now() - startTime) / 1000);
+  }
+
+  setInterval(refreshSummary, 5000);
+  refreshSummary();
+
+  // ── Event log ──────────────────────────────────────────────────────────────
+  const MAX_EVENTS = 120;
+
+  function addEvent(msg) {
+    const feed = document.getElementById('logFeed');
+    evtCount++;
+    document.getElementById('evtCount').textContent = `${evtCount} events`;
+
+    const type = msg.type || 'unknown';
+    const div  = document.createElement('div');
+    div.className = `log-event evt-${type}`;
+
+    let agentName = msg.agent || (type === 'snapshot' ? 'system' : '—');
+    let detail    = '';
+    let latency   = '';
+
+    if (type === 'snapshot') {
+      detail = `${(msg.agents||[]).length} agents loaded`;
+    } else if (type === 'status') {
+      detail = `→ ${msg.status}  queue:${msg.task_queue ?? 0}`;
+      if (msg.error) detail += `  err:${msg.error.slice(0,30)}`;
+    } else if (type === 'call') {
+      detail = msg.error ? 'error' : 'ok';
+      if (msg.latency_ms) latency = `${Math.round(msg.latency_ms)}ms`;
+      if (msg.tokens)     detail += `  ${msg.tokens}tok`;
+    } else if (type === 'ping') {
+      agentName = 'heartbeat';
+      detail    = `queue:${msg.task_queue ?? 0}`;
+    }
+
+    const time = new Date().toLocaleTimeString('en', { hour12: false });
+    div.innerHTML = `
+      <div class="evt-pip"></div>
+      <div class="evt-body">
+        <div class="evt-agent">${agentName}</div>
+        <div class="evt-detail">${detail}</div>
+        <div class="evt-time">${time}</div>
+      </div>
+      ${latency ? `<div class="evt-latency">${latency}</div>` : ''}
+    `;
+
+    feed.insertBefore(div, feed.firstChild);
+    while (feed.children.length > MAX_EVENTS) feed.removeChild(feed.lastChild);
+  }
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  function fmt(n) {
+    if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
+    if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
+    return String(n);
+  }
+  function fmtUptime(s) {
+    const h = Math.floor(s/3600), m = Math.floor((s%3600)/60);
+    if (h) return `${h}h ${m}m`;
+    return `${m}m ${Math.floor(s%60)}s`;
+  }
+
+  // ── Bootstrap ──────────────────────────────────────────────────────────────
+  // Also seed from REST in case WS is slow
+  fetch('/agents').then(r => r.json()).then(data => {
+    if (data.agents) data.agents.forEach(applyAgent);
+    updateHeader();
+    refreshSummary();
+  }).catch(() => {});
+
+  connect();
+})();
+</script>
+</body>
+</html>
