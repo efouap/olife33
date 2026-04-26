@@ -1,0 +1,19 @@
+{
+  "name": "olife33",
+  "version": "1.0.0",
+  "description": "O LIFE Supreme Intelligence OS — build pipeline",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "build:watch": "node build.js && echo \"Watching...\" && nodemon --watch index.html --exec \"node build.js\"",
+    "audit": "node build.js 2>&1 | grep -E \"ISSUE|FIX|SKIP|REVIEW\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "clean-css-cli": "^5.6.3",
+    "html-minifier-terser": "^7.2.0",
+    "terser": "^5.46.2"
+  }
+}
