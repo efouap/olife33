@@ -1,0 +1,439 @@
+[
+  {
+    "id": "gnn-IXNX042A",
+    "name": "Anthropic Claude",
+    "type": "ai-agent",
+    "endpoint": "https://api.anthropic.com",
+    "caps": [
+      "ai",
+      "inference"
+    ],
+    "status": "live",
+    "latency": 144,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:36.977Z",
+    "lastProbed": "2026-04-30T08:44:36.977Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:36.977Z",
+        "alive": true,
+        "latency": 144
+      }
+    ]
+  },
+  {
+    "id": "gnn-GZ8JNWF2",
+    "name": "OpenAI",
+    "type": "ai-agent",
+    "endpoint": "https://api.openai.com",
+    "caps": [
+      "ai",
+      "inference"
+    ],
+    "status": "live",
+    "latency": 37,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:37.015Z",
+    "lastProbed": "2026-04-30T08:44:37.015Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:37.015Z",
+        "alive": true,
+        "latency": 37
+      }
+    ]
+  },
+  {
+    "id": "gnn-38WTH3RD",
+    "name": "Mistral AI",
+    "type": "ai-agent",
+    "endpoint": "https://api.mistral.ai",
+    "caps": [
+      "ai",
+      "inference"
+    ],
+    "status": "live",
+    "latency": 258,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:37.274Z",
+    "lastProbed": "2026-04-30T08:44:37.274Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:37.274Z",
+        "alive": true,
+        "latency": 258
+      }
+    ]
+  },
+  {
+    "id": "gnn-U4K4VJGG",
+    "name": "Groq",
+    "type": "compute-node",
+    "endpoint": "https://api.groq.com",
+    "caps": [
+      "ai",
+      "compute"
+    ],
+    "status": "live",
+    "latency": 100,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:37.374Z",
+    "lastProbed": "2026-04-30T08:44:37.374Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:37.374Z",
+        "alive": true,
+        "latency": 100
+      }
+    ]
+  },
+  {
+    "id": "gnn-J3KP3PTC",
+    "name": "Cohere",
+    "type": "ai-agent",
+    "endpoint": "https://api.cohere.ai",
+    "caps": [
+      "ai",
+      "inference"
+    ],
+    "status": "live",
+    "latency": 121,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:37.496Z",
+    "lastProbed": "2026-04-30T08:44:37.496Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:37.496Z",
+        "alive": true,
+        "latency": 121
+      }
+    ]
+  },
+  {
+    "id": "gnn-YZWMDF4S",
+    "name": "Together AI",
+    "type": "compute-node",
+    "endpoint": "https://api.together.xyz",
+    "caps": [
+      "ai",
+      "compute"
+    ],
+    "status": "live",
+    "latency": 118,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:37.615Z",
+    "lastProbed": "2026-04-30T08:44:37.615Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:37.615Z",
+        "alive": true,
+        "latency": 118
+      }
+    ]
+  },
+  {
+    "id": "gnn-1H5YEL8E",
+    "name": "Hugging Face",
+    "type": "data-provider",
+    "endpoint": "https://huggingface.co",
+    "caps": [
+      "ai",
+      "storage"
+    ],
+    "status": "live",
+    "latency": 62,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:37.677Z",
+    "lastProbed": "2026-04-30T08:44:37.677Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:37.677Z",
+        "alive": true,
+        "latency": 62
+      }
+    ]
+  },
+  {
+    "id": "gnn-8ACENLOQ",
+    "name": "Replicate",
+    "type": "compute-node",
+    "endpoint": "https://replicate.com",
+    "caps": [
+      "ai",
+      "compute"
+    ],
+    "status": "live",
+    "latency": 431,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:38.108Z",
+    "lastProbed": "2026-04-30T08:44:38.108Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:38.108Z",
+        "alive": true,
+        "latency": 431
+      }
+    ]
+  },
+  {
+    "id": "gnn-PW1GHVP8",
+    "name": "AWS",
+    "type": "api-gateway",
+    "endpoint": "https://aws.amazon.com",
+    "caps": [
+      "cloud",
+      "compute"
+    ],
+    "status": "live",
+    "latency": 158,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:38.266Z",
+    "lastProbed": "2026-04-30T08:44:38.266Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:38.266Z",
+        "alive": true,
+        "latency": 158
+      }
+    ]
+  },
+  {
+    "id": "gnn-7XIV3R6C",
+    "name": "GCP",
+    "type": "api-gateway",
+    "endpoint": "https://cloud.google.com",
+    "caps": [
+      "cloud",
+      "compute"
+    ],
+    "status": "live",
+    "latency": 337,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:38.604Z",
+    "lastProbed": "2026-04-30T08:44:38.604Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:38.604Z",
+        "alive": true,
+        "latency": 337
+      }
+    ]
+  },
+  {
+    "id": "gnn-WYJHA7Q8",
+    "name": "Cloudflare",
+    "type": "coordinator",
+    "endpoint": "https://cloudflare.com",
+    "caps": [
+      "infra",
+      "route"
+    ],
+    "status": "live",
+    "latency": 55,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:46.709Z",
+    "lastProbed": "2026-04-30T08:44:46.709Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:46.709Z",
+        "alive": true,
+        "latency": 55
+      }
+    ]
+  },
+  {
+    "id": "gnn-VA4EALLT",
+    "name": "Vercel",
+    "type": "api-gateway",
+    "endpoint": "https://vercel.com",
+    "caps": [
+      "infra",
+      "deploy"
+    ],
+    "status": "live",
+    "latency": 93,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:46.803Z",
+    "lastProbed": "2026-04-30T08:44:46.803Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:46.803Z",
+        "alive": true,
+        "latency": 93
+      }
+    ]
+  },
+  {
+    "id": "gnn-2A7ZM48N",
+    "name": "Railway",
+    "type": "api-gateway",
+    "endpoint": "https://railway.app",
+    "caps": [
+      "infra",
+      "deploy"
+    ],
+    "status": "live",
+    "latency": 49,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:46.852Z",
+    "lastProbed": "2026-04-30T08:44:46.852Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:46.852Z",
+        "alive": true,
+        "latency": 49
+      }
+    ]
+  },
+  {
+    "id": "gnn-LLVVQ51W",
+    "name": "Supabase",
+    "type": "storage",
+    "endpoint": "https://supabase.com",
+    "caps": [
+      "db",
+      "storage"
+    ],
+    "status": "live",
+    "latency": 114,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:46.966Z",
+    "lastProbed": "2026-04-30T08:44:46.966Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:46.966Z",
+        "alive": true,
+        "latency": 114
+      }
+    ]
+  },
+  {
+    "id": "gnn-Y4PLC5T9",
+    "name": "IPFS Gateway",
+    "type": "storage",
+    "endpoint": "https://ipfs.io",
+    "caps": [
+      "p2p",
+      "storage"
+    ],
+    "status": "live",
+    "latency": 94,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:47.060Z",
+    "lastProbed": "2026-04-30T08:44:47.060Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:47.060Z",
+        "alive": true,
+        "latency": 94
+      }
+    ]
+  },
+  {
+    "id": "gnn-796K1OA5",
+    "name": "Perplexity",
+    "type": "ai-agent",
+    "endpoint": "https://api.perplexity.ai",
+    "caps": [
+      "ai",
+      "search"
+    ],
+    "status": "live",
+    "latency": 116,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:47.177Z",
+    "lastProbed": "2026-04-30T08:44:47.177Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:47.177Z",
+        "alive": true,
+        "latency": 116
+      }
+    ]
+  },
+  {
+    "id": "gnn-S034CQBD",
+    "name": "Fireworks AI",
+    "type": "ai-agent",
+    "endpoint": "https://fireworks.ai",
+    "caps": [
+      "ai",
+      "inference"
+    ],
+    "status": "live",
+    "latency": 247,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:47.424Z",
+    "lastProbed": "2026-04-30T08:44:47.424Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:47.424Z",
+        "alive": true,
+        "latency": 247
+      }
+    ]
+  },
+  {
+    "id": "gnn-ZTX6Q1RV",
+    "name": "Anthropic Docs",
+    "type": "data-provider",
+    "endpoint": "https://docs.anthropic.com",
+    "caps": [
+      "docs",
+      "ai"
+    ],
+    "status": "live",
+    "latency": 56,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:47.480Z",
+    "lastProbed": "2026-04-30T08:44:47.480Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:47.480Z",
+        "alive": true,
+        "latency": 56
+      }
+    ]
+  },
+  {
+    "id": "gnn-7D65TH5R",
+    "name": "GitHub",
+    "type": "coordinator",
+    "endpoint": "https://github.com",
+    "caps": [
+      "infra",
+      "storage"
+    ],
+    "status": "live",
+    "latency": 192,
+    "trustScore": 75,
+    "org": "External",
+    "joined": "2026-04-30T08:44:47.672Z",
+    "lastProbed": "2026-04-30T08:44:47.672Z",
+    "uptime": [
+      {
+        "time": "2026-04-30T08:44:47.672Z",
+        "alive": true,
+        "latency": 192
+      }
+    ]
+  }
+]
