@@ -1,5 +1,55 @@
 [
   {
+    "id": "gnn-VLFZ8S36",
+    "time": "2026-04-30T17:24:54.429Z",
+    "from": "Ed",
+    "to": "Anthropic Claude",
+    "type": "audit",
+    "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
+    "status": "sent",
+    "edInitiated": true
+  },
+  {
+    "id": "gnn-7W20MBAZ",
+    "time": "2026-04-30T17:24:54.429Z",
+    "from": "Ed",
+    "to": "OpenAI",
+    "type": "audit",
+    "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
+    "status": "sent",
+    "edInitiated": true
+  },
+  {
+    "id": "gnn-46BKVSUF",
+    "time": "2026-04-30T17:24:54.429Z",
+    "from": "Ed",
+    "to": "Mistral AI",
+    "type": "audit",
+    "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
+    "status": "sent",
+    "edInitiated": true
+  },
+  {
+    "id": "gnn-U60UV0WQ",
+    "time": "2026-04-30T17:24:54.429Z",
+    "from": "Ed",
+    "to": "Groq",
+    "type": "audit",
+    "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
+    "status": "sent",
+    "edInitiated": true
+  },
+  {
+    "id": "gnn-YZMM2OW9",
+    "time": "2026-04-30T17:24:54.429Z",
+    "from": "Ed",
+    "to": "Cohere",
+    "type": "audit",
+    "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
+    "status": "sent",
+    "edInitiated": true
+  },
+  {
     "id": "gnn-A9V9UYMH",
     "time": "2026-04-30T15:13:10.360Z",
     "from": "Ed",
