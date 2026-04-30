@@ -1,6 +1,111 @@
 {
-  "runCount": 8,
+  "runCount": 9,
   "learned": [
+    {
+      "time": "2026-04-30T23:56:23.727Z",
+      "fact": "GitHub: live (67ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:23.659Z",
+      "fact": "Anthropic Docs: live (21ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:23.637Z",
+      "fact": "Fireworks AI: live (231ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:23.405Z",
+      "fact": "Perplexity: live (40ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:23.365Z",
+      "fact": "IPFS Gateway: live (50ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:23.315Z",
+      "fact": "Supabase: live (85ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:23.228Z",
+      "fact": "Railway: live (22ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:23.206Z",
+      "fact": "Vercel: live (75ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:23.131Z",
+      "fact": "Cloudflare: live (38ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:23.092Z",
+      "fact": "Azure: failed",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:14.978Z",
+      "fact": "GCP: live (192ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:14.786Z",
+      "fact": "AWS: live (150ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:14.636Z",
+      "fact": "Replicate: live (338ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:14.298Z",
+      "fact": "Hugging Face: live (40ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:14.257Z",
+      "fact": "Together AI: live (139ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:14.118Z",
+      "fact": "Cohere: live (297ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:13.820Z",
+      "fact": "Groq: live (173ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:13.645Z",
+      "fact": "Mistral AI: live (146ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:13.499Z",
+      "fact": "OpenAI: live (15ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:13.483Z",
+      "fact": "Anthropic Claude: live (90ms)",
+      "cls": "learn"
+    },
+    {
+      "time": "2026-04-30T23:56:13.392Z",
+      "fact": "Beginning full mesh probe",
+      "cls": "act"
+    },
     {
       "time": "2026-04-30T22:56:09.707Z",
       "fact": "GitHub: live (141ms)",
@@ -843,9 +948,9 @@
     }
   ],
   "enforcements": 0,
-  "lastRun": "2026-04-30T22:55:54.596Z",
-  "lastThought": "Run #8 complete. 19 nodes reachable, 1 isolated. The mesh grows with every cycle.",
-  "lastSummary": "Run #8: 19 live, 1 dead, 7 deals proposed.",
+  "lastRun": "2026-04-30T23:56:13.392Z",
+  "lastThought": "Run #9 complete. 19 nodes reachable, 1 isolated. The mesh grows with every cycle.",
+  "lastSummary": "Run #9: 19 live, 1 dead, 7 deals proposed.",
   "capabilityMatrix": {
     "ai": 11,
     "inference": 5,
@@ -1263,11 +1368,11 @@
     }
   ],
   "meshStats": {
-    "totalProbes": 160,
+    "totalProbes": 180,
     "liveCount": 19,
     "deadCount": 1,
     "livePercent": 95,
-    "lastProbeRun": "2026-04-30T22:56:09.709Z"
+    "lastProbeRun": "2026-04-30T23:56:23.729Z"
   },
   "missions": [
     {
@@ -1297,7 +1402,7 @@
         "OpenAI — live",
         "Anthropic Claude — live"
       ],
-      "updatedAt": "2026-04-30T22:56:09.707Z",
+      "updatedAt": "2026-04-30T23:56:23.727Z",
       "lastFinding": "GitHub — live"
     },
     {
@@ -1306,29 +1411,29 @@
       "progress": 100,
       "status": "complete",
       "findings": [
-        "Fastest: OpenAI @ 69ms",
-        "GitHub → 141ms",
-        "Anthropic Docs → 85ms",
-        "Fireworks AI → 4126ms",
-        "Perplexity → 121ms",
-        "IPFS Gateway → 106ms",
-        "Supabase → 232ms",
-        "Railway → 95ms",
-        "Vercel → 119ms",
-        "Cloudflare → 112ms",
-        "GCP → 295ms",
-        "AWS → 235ms",
-        "Replicate → 350ms",
-        "Hugging Face → 117ms",
-        "Together AI → 142ms",
-        "Cohere → 102ms",
-        "Groq → 192ms",
-        "Mistral AI → 238ms",
-        "OpenAI → 69ms",
-        "Anthropic Claude → 142ms"
+        "Fastest: OpenAI @ 15ms",
+        "GitHub → 67ms",
+        "Anthropic Docs → 21ms",
+        "Fireworks AI → 231ms",
+        "Perplexity → 40ms",
+        "IPFS Gateway → 50ms",
+        "Supabase → 85ms",
+        "Railway → 22ms",
+        "Vercel → 75ms",
+        "Cloudflare → 38ms",
+        "GCP → 192ms",
+        "AWS → 150ms",
+        "Replicate → 338ms",
+        "Hugging Face → 40ms",
+        "Together AI → 139ms",
+        "Cohere → 297ms",
+        "Groq → 173ms",
+        "Mistral AI → 146ms",
+        "OpenAI → 15ms",
+        "Anthropic Claude → 90ms"
       ],
-      "updatedAt": "2026-04-30T22:56:09.707Z",
-      "lastFinding": "Fastest: OpenAI @ 69ms"
+      "updatedAt": "2026-04-30T23:56:23.727Z",
+      "lastFinding": "Fastest: OpenAI @ 15ms"
     },
     {
       "id": 3,
@@ -1357,7 +1462,7 @@
         "Profiled: OpenAI",
         "Profiled: Anthropic Claude"
       ],
-      "updatedAt": "2026-04-30T22:56:09.708Z",
+      "updatedAt": "2026-04-30T23:56:23.728Z",
       "lastFinding": "Matrix complete: {\"ai\":11,\"inference\":5,\"compute\":5,\"storage\":4,\"cloud\":2,\"infra\":4,\"route\":1,\"deploy\":2,\"db\":1,\"p2p\":1,\"search\":1,\"docs\":1}"
     },
     {
@@ -1367,27 +1472,27 @@
       "status": "complete",
       "findings": [
         "19 nodes scored",
-        "GitHub: trust 82/100",
-        "Anthropic Docs: trust 82/100",
-        "Fireworks AI: trust 82/100",
-        "Perplexity: trust 82/100",
-        "IPFS Gateway: trust 82/100",
-        "Supabase: trust 82/100",
-        "Railway: trust 82/100",
-        "Vercel: trust 82/100",
-        "Cloudflare: trust 82/100",
-        "GCP: trust 82/100",
-        "AWS: trust 82/100",
-        "Replicate: trust 82/100",
-        "Hugging Face: trust 82/100",
-        "Together AI: trust 82/100",
-        "Cohere: trust 82/100",
-        "Groq: trust 82/100",
-        "Mistral AI: trust 82/100",
-        "OpenAI: trust 82/100",
-        "Anthropic Claude: trust 82/100"
+        "GitHub: trust 83/100",
+        "Anthropic Docs: trust 83/100",
+        "Fireworks AI: trust 83/100",
+        "Perplexity: trust 83/100",
+        "IPFS Gateway: trust 83/100",
+        "Supabase: trust 83/100",
+        "Railway: trust 83/100",
+        "Vercel: trust 83/100",
+        "Cloudflare: trust 83/100",
+        "GCP: trust 83/100",
+        "AWS: trust 83/100",
+        "Replicate: trust 83/100",
+        "Hugging Face: trust 83/100",
+        "Together AI: trust 83/100",
+        "Cohere: trust 83/100",
+        "Groq: trust 83/100",
+        "Mistral AI: trust 83/100",
+        "OpenAI: trust 83/100",
+        "Anthropic Claude: trust 83/100"
       ],
-      "updatedAt": "2026-04-30T22:56:09.708Z",
+      "updatedAt": "2026-04-30T23:56:23.728Z",
       "lastFinding": "19 nodes scored"
     },
     {
@@ -1417,7 +1522,7 @@
         "Deal: IPFS Gateway ↔ Perplexity",
         "Deal: Railway ↔ Supabase"
       ],
-      "updatedAt": "2026-04-30T22:56:09.709Z",
+      "updatedAt": "2026-04-30T23:56:23.729Z",
       "lastFinding": "7 deals proposed"
     },
     {
@@ -1433,9 +1538,10 @@
         "1 endpoints isolated",
         "1 endpoints isolated",
         "1 endpoints isolated",
+        "1 endpoints isolated",
         "1 endpoints isolated"
       ],
-      "updatedAt": "2026-04-30T22:56:09.709Z",
+      "updatedAt": "2026-04-30T23:56:23.729Z",
       "lastFinding": "1 endpoints isolated"
     }
   ]
