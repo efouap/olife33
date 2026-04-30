@@ -1,110 +1,110 @@
 {
-  "lastRun": "2026-04-30T12:19:59.914Z",
-  "runCount": 3,
+  "lastRun": "2026-04-30T15:13:10.362Z",
+  "runCount": 4,
   "log": [
     {
-      "time": "2026-04-30T12:19:49.734Z",
+      "time": "2026-04-30T15:13:00.418Z",
       "fact": "Beginning full mesh probe",
       "cls": "act"
     },
     {
-      "time": "2026-04-30T12:19:49.840Z",
-      "fact": "Anthropic Claude: live (104ms)",
+      "time": "2026-04-30T15:13:00.492Z",
+      "fact": "Anthropic Claude: live (73ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:49.863Z",
-      "fact": "OpenAI: live (22ms)",
+      "time": "2026-04-30T15:13:00.514Z",
+      "fact": "OpenAI: live (21ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:50.019Z",
-      "fact": "Mistral AI: live (156ms)",
+      "time": "2026-04-30T15:13:00.647Z",
+      "fact": "Mistral AI: live (133ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:50.130Z",
-      "fact": "Groq: live (111ms)",
+      "time": "2026-04-30T15:13:00.760Z",
+      "fact": "Groq: live (112ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:50.355Z",
-      "fact": "Cohere: live (225ms)",
+      "time": "2026-04-30T15:13:00.847Z",
+      "fact": "Cohere: live (85ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:50.630Z",
-      "fact": "Together AI: live (275ms)",
+      "time": "2026-04-30T15:13:00.956Z",
+      "fact": "Together AI: live (109ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:50.693Z",
-      "fact": "Hugging Face: live (63ms)",
+      "time": "2026-04-30T15:13:00.990Z",
+      "fact": "Hugging Face: live (34ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:50.899Z",
-      "fact": "Replicate: live (205ms)",
+      "time": "2026-04-30T15:13:01.312Z",
+      "fact": "Replicate: live (320ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:51.044Z",
-      "fact": "AWS: live (145ms)",
+      "time": "2026-04-30T15:13:01.445Z",
+      "fact": "AWS: live (132ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:51.243Z",
-      "fact": "GCP: live (199ms)",
+      "time": "2026-04-30T15:13:01.685Z",
+      "fact": "GCP: live (239ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:59.273Z",
+      "time": "2026-04-30T15:13:09.704Z",
       "fact": "Azure: failed",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:59.302Z",
-      "fact": "Cloudflare: live (29ms)",
+      "time": "2026-04-30T15:13:09.750Z",
+      "fact": "Cloudflare: live (45ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:59.402Z",
-      "fact": "Vercel: live (100ms)",
+      "time": "2026-04-30T15:13:09.821Z",
+      "fact": "Vercel: live (70ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:59.437Z",
-      "fact": "Railway: live (35ms)",
+      "time": "2026-04-30T15:13:09.862Z",
+      "fact": "Railway: live (41ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:59.512Z",
-      "fact": "Supabase: live (74ms)",
+      "time": "2026-04-30T15:13:09.920Z",
+      "fact": "Supabase: live (58ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:59.542Z",
-      "fact": "IPFS Gateway: live (30ms)",
+      "time": "2026-04-30T15:13:09.946Z",
+      "fact": "IPFS Gateway: live (26ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:59.567Z",
-      "fact": "Perplexity: live (24ms)",
+      "time": "2026-04-30T15:13:09.993Z",
+      "fact": "Perplexity: live (47ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:59.807Z",
-      "fact": "Fireworks AI: live (240ms)",
+      "time": "2026-04-30T15:13:10.316Z",
+      "fact": "Fireworks AI: live (323ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:59.831Z",
-      "fact": "Anthropic Docs: live (24ms)",
+      "time": "2026-04-30T15:13:10.344Z",
+      "fact": "Anthropic Docs: live (28ms)",
       "cls": "learn"
     },
     {
-      "time": "2026-04-30T12:19:59.897Z",
-      "fact": "GitHub: live (65ms)",
+      "time": "2026-04-30T15:13:10.358Z",
+      "fact": "GitHub: live (14ms)",
       "cls": "learn"
     }
   ]
