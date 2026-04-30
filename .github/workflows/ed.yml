@@ -1,0 +1,39 @@
+name: Ed — GNN Autonomous Run
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'gnn/ed-runner.js'
+
+permissions:
+  contents: write
+
+jobs:
+  ed-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout olife33
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Ed executes
+        run: node gnn/ed-runner.js
+
+      - name: Ed commits state back to repo
+        run: |
+          git config user.name "Ed — GNN Supreme Intelligence"
+          git config user.email "ed@olife33.gnn"
+          git add gnn/data/
+          git diff --staged --quiet || git commit -m "Ed run: $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push
