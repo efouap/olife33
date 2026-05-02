@@ -9,12 +9,17 @@
       "inference"
     ],
     "status": "live",
-    "latency": 147,
+    "latency": 83,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:36.977Z",
-    "lastProbed": "2026-05-02T13:19:53.701Z",
+    "lastProbed": "2026-05-02T14:52:16.514Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:16.514Z",
+        "alive": true,
+        "latency": 83
+      },
       {
         "time": "2026-05-02T13:19:53.701Z",
         "alive": true,
@@ -162,12 +167,17 @@
       "inference"
     ],
     "status": "live",
-    "latency": 65,
+    "latency": 17,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:37.015Z",
-    "lastProbed": "2026-05-02T13:19:53.767Z",
+    "lastProbed": "2026-05-02T14:52:16.532Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:16.532Z",
+        "alive": true,
+        "latency": 17
+      },
       {
         "time": "2026-05-02T13:19:53.767Z",
         "alive": true,
@@ -315,12 +325,17 @@
       "inference"
     ],
     "status": "live",
-    "latency": 217,
+    "latency": 146,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:37.274Z",
-    "lastProbed": "2026-05-02T13:19:53.985Z",
+    "lastProbed": "2026-05-02T14:52:16.678Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:16.678Z",
+        "alive": true,
+        "latency": 146
+      },
       {
         "time": "2026-05-02T13:19:53.985Z",
         "alive": true,
@@ -468,12 +483,17 @@
       "compute"
     ],
     "status": "live",
-    "latency": 147,
+    "latency": 71,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:37.374Z",
-    "lastProbed": "2026-05-02T13:19:54.133Z",
+    "lastProbed": "2026-05-02T14:52:16.751Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:16.751Z",
+        "alive": true,
+        "latency": 71
+      },
       {
         "time": "2026-05-02T13:19:54.133Z",
         "alive": true,
@@ -621,12 +641,17 @@
       "inference"
     ],
     "status": "live",
-    "latency": 273,
+    "latency": 116,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:37.496Z",
-    "lastProbed": "2026-05-02T13:19:54.407Z",
+    "lastProbed": "2026-05-02T14:52:16.868Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:16.868Z",
+        "alive": true,
+        "latency": 116
+      },
       {
         "time": "2026-05-02T13:19:54.407Z",
         "alive": true,
@@ -774,12 +799,17 @@
       "compute"
     ],
     "status": "live",
-    "latency": 154,
+    "latency": 109,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:37.615Z",
-    "lastProbed": "2026-05-02T13:19:54.561Z",
+    "lastProbed": "2026-05-02T14:52:16.977Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:16.977Z",
+        "alive": true,
+        "latency": 109
+      },
       {
         "time": "2026-05-02T13:19:54.561Z",
         "alive": true,
@@ -927,12 +957,17 @@
       "storage"
     ],
     "status": "live",
-    "latency": 195,
+    "latency": 68,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:37.677Z",
-    "lastProbed": "2026-05-02T13:19:54.757Z",
+    "lastProbed": "2026-05-02T14:52:17.045Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:17.045Z",
+        "alive": true,
+        "latency": 68
+      },
       {
         "time": "2026-05-02T13:19:54.757Z",
         "alive": true,
@@ -1080,12 +1115,17 @@
       "compute"
     ],
     "status": "live",
-    "latency": 386,
+    "latency": 251,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:38.108Z",
-    "lastProbed": "2026-05-02T13:19:55.143Z",
+    "lastProbed": "2026-05-02T14:52:17.296Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:17.296Z",
+        "alive": true,
+        "latency": 251
+      },
       {
         "time": "2026-05-02T13:19:55.143Z",
         "alive": true,
@@ -1233,12 +1273,17 @@
       "compute"
     ],
     "status": "live",
-    "latency": 153,
+    "latency": 113,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:38.266Z",
-    "lastProbed": "2026-05-02T13:19:55.298Z",
+    "lastProbed": "2026-05-02T14:52:17.409Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:17.409Z",
+        "alive": true,
+        "latency": 113
+      },
       {
         "time": "2026-05-02T13:19:55.298Z",
         "alive": true,
@@ -1386,12 +1431,17 @@
       "compute"
     ],
     "status": "live",
-    "latency": 257,
+    "latency": 246,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:38.604Z",
-    "lastProbed": "2026-05-02T13:19:55.555Z",
+    "lastProbed": "2026-05-02T14:52:17.656Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:17.656Z",
+        "alive": true,
+        "latency": 246
+      },
       {
         "time": "2026-05-02T13:19:55.555Z",
         "alive": true,
@@ -1539,12 +1589,17 @@
       "route"
     ],
     "status": "live",
-    "latency": 102,
+    "latency": 25,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:46.709Z",
-    "lastProbed": "2026-05-02T13:20:03.751Z",
+    "lastProbed": "2026-05-02T14:52:25.791Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:25.791Z",
+        "alive": true,
+        "latency": 25
+      },
       {
         "time": "2026-05-02T13:20:03.751Z",
         "alive": true,
@@ -1692,12 +1747,17 @@
       "deploy"
     ],
     "status": "live",
-    "latency": 108,
+    "latency": 90,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:46.803Z",
-    "lastProbed": "2026-05-02T13:20:03.859Z",
+    "lastProbed": "2026-05-02T14:52:25.881Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:25.881Z",
+        "alive": true,
+        "latency": 90
+      },
       {
         "time": "2026-05-02T13:20:03.859Z",
         "alive": true,
@@ -1845,12 +1905,17 @@
       "deploy"
     ],
     "status": "live",
-    "latency": 82,
+    "latency": 23,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:46.852Z",
-    "lastProbed": "2026-05-02T13:20:03.941Z",
+    "lastProbed": "2026-05-02T14:52:25.904Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:25.904Z",
+        "alive": true,
+        "latency": 23
+      },
       {
         "time": "2026-05-02T13:20:03.941Z",
         "alive": true,
@@ -1998,12 +2063,17 @@
       "storage"
     ],
     "status": "live",
-    "latency": 148,
+    "latency": 108,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:46.966Z",
-    "lastProbed": "2026-05-02T13:20:04.089Z",
+    "lastProbed": "2026-05-02T14:52:26.013Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:26.013Z",
+        "alive": true,
+        "latency": 108
+      },
       {
         "time": "2026-05-02T13:20:04.089Z",
         "alive": true,
@@ -2151,12 +2221,17 @@
       "storage"
     ],
     "status": "live",
-    "latency": 117,
+    "latency": 33,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:47.060Z",
-    "lastProbed": "2026-05-02T13:20:04.206Z",
+    "lastProbed": "2026-05-02T14:52:26.046Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:26.046Z",
+        "alive": true,
+        "latency": 33
+      },
       {
         "time": "2026-05-02T13:20:04.206Z",
         "alive": true,
@@ -2304,12 +2379,17 @@
       "search"
     ],
     "status": "live",
-    "latency": 101,
+    "latency": 29,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:47.177Z",
-    "lastProbed": "2026-05-02T13:20:04.308Z",
+    "lastProbed": "2026-05-02T14:52:26.075Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:26.075Z",
+        "alive": true,
+        "latency": 29
+      },
       {
         "time": "2026-05-02T13:20:04.308Z",
         "alive": true,
@@ -2457,12 +2537,17 @@
       "inference"
     ],
     "status": "live",
-    "latency": 275,
+    "latency": 272,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:47.424Z",
-    "lastProbed": "2026-05-02T13:20:04.584Z",
+    "lastProbed": "2026-05-02T14:52:26.347Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:26.347Z",
+        "alive": true,
+        "latency": 272
+      },
       {
         "time": "2026-05-02T13:20:04.584Z",
         "alive": true,
@@ -2610,12 +2695,17 @@
       "ai"
     ],
     "status": "live",
-    "latency": 57,
+    "latency": 22,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:47.480Z",
-    "lastProbed": "2026-05-02T13:20:04.641Z",
+    "lastProbed": "2026-05-02T14:52:26.369Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:26.369Z",
+        "alive": true,
+        "latency": 22
+      },
       {
         "time": "2026-05-02T13:20:04.641Z",
         "alive": true,
@@ -2763,12 +2853,17 @@
       "storage"
     ],
     "status": "live",
-    "latency": 87,
+    "latency": 55,
     "trustScore": 100,
     "org": "External",
     "joined": "2026-04-30T08:44:47.672Z",
-    "lastProbed": "2026-05-02T13:20:04.728Z",
+    "lastProbed": "2026-05-02T14:52:26.424Z",
     "uptime": [
+      {
+        "time": "2026-05-02T14:52:26.424Z",
+        "alive": true,
+        "latency": 55
+      },
       {
         "time": "2026-05-02T13:20:04.728Z",
         "alive": true,

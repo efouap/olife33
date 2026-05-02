@@ -1,15 +1,15 @@
 {
-  "updatedAt": "2026-05-02T13:20:04.732Z",
-  "runCount": 27,
+  "updatedAt": "2026-05-02T14:52:26.429Z",
+  "runCount": 28,
   "liveNodes": 19,
   "deadNodes": 1,
   "totalNodes": 19,
   "livePercent": 95,
   "fastest": {
-    "name": "Anthropic Docs",
-    "latency": 57
+    "name": "OpenAI",
+    "latency": 17
   },
-  "edThought": "Run #27 complete. 19 nodes reachable, 1 isolated. The mesh grows with every cycle.",
+  "edThought": "Run #28 complete. 19 nodes reachable, 1 isolated. The mesh grows with every cycle.",
   "missions": [
     {
       "id": 1,
@@ -23,7 +23,7 @@
       "name": "Latency & Reliability Mapping",
       "progress": 100,
       "status": "complete",
-      "lastFinding": "Fastest: Anthropic Docs @ 57ms"
+      "lastFinding": "Fastest: OpenAI @ 17ms"
     },
     {
       "id": 3,
@@ -57,66 +57,116 @@
   "topNodes": [
     {
       "name": "Anthropic Claude",
-      "latency": 147,
+      "latency": 83,
       "trustScore": 100,
       "type": "ai-agent"
     },
     {
       "name": "OpenAI",
-      "latency": 65,
+      "latency": 17,
       "trustScore": 100,
       "type": "ai-agent"
     },
     {
       "name": "Mistral AI",
-      "latency": 217,
+      "latency": 146,
       "trustScore": 100,
       "type": "ai-agent"
     },
     {
       "name": "Groq",
-      "latency": 147,
+      "latency": 71,
       "trustScore": 100,
       "type": "compute-node"
     },
     {
       "name": "Cohere",
-      "latency": 273,
+      "latency": 116,
       "trustScore": 100,
       "type": "ai-agent"
     },
     {
       "name": "Together AI",
-      "latency": 154,
+      "latency": 109,
       "trustScore": 100,
       "type": "compute-node"
     },
     {
       "name": "Hugging Face",
-      "latency": 195,
+      "latency": 68,
       "trustScore": 100,
       "type": "data-provider"
     },
     {
       "name": "Replicate",
-      "latency": 386,
+      "latency": 251,
       "trustScore": 100,
       "type": "compute-node"
     },
     {
       "name": "AWS",
-      "latency": 153,
+      "latency": 113,
       "trustScore": 100,
       "type": "api-gateway"
     },
     {
       "name": "GCP",
-      "latency": 257,
+      "latency": 246,
       "trustScore": 100,
       "type": "api-gateway"
     }
   ],
   "recentTx": [
+    {
+      "id": "gnn-0IFH0LMK",
+      "time": "2026-05-02T14:52:26.427Z",
+      "from": "Ed",
+      "to": "Anthropic Claude",
+      "type": "audit",
+      "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
+      "status": "sent",
+      "edInitiated": true
+    },
+    {
+      "id": "gnn-2EOWEVAA",
+      "time": "2026-05-02T14:52:26.427Z",
+      "from": "Ed",
+      "to": "OpenAI",
+      "type": "audit",
+      "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
+      "status": "sent",
+      "edInitiated": true
+    },
+    {
+      "id": "gnn-E3D9IZM5",
+      "time": "2026-05-02T14:52:26.427Z",
+      "from": "Ed",
+      "to": "Mistral AI",
+      "type": "audit",
+      "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
+      "status": "sent",
+      "edInitiated": true
+    },
+    {
+      "id": "gnn-SGKYT6L9",
+      "time": "2026-05-02T14:52:26.427Z",
+      "from": "Ed",
+      "to": "Groq",
+      "type": "audit",
+      "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
+      "status": "sent",
+      "edInitiated": true
+    },
+    {
+      "id": "gnn-X20242W2",
+      "time": "2026-05-02T14:52:26.427Z",
+      "from": "Ed",
+      "to": "Cohere",
+      "type": "audit",
+      "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
+      "status": "sent",
+      "edInitiated": true
+    },
     {
       "id": "gnn-UHZ9C5OH",
       "time": "2026-05-02T13:20:04.730Z",
@@ -260,56 +310,6 @@
     {
       "id": "gnn-3H6GOVBR",
       "time": "2026-05-02T10:00:05.147Z",
-      "from": "Ed",
-      "to": "Cohere",
-      "type": "audit",
-      "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
-      "status": "sent",
-      "edInitiated": true
-    },
-    {
-      "id": "gnn-RP4NG8A7",
-      "time": "2026-05-02T08:22:05.788Z",
-      "from": "Ed",
-      "to": "Anthropic Claude",
-      "type": "audit",
-      "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
-      "status": "sent",
-      "edInitiated": true
-    },
-    {
-      "id": "gnn-RA49C1WV",
-      "time": "2026-05-02T08:22:05.788Z",
-      "from": "Ed",
-      "to": "OpenAI",
-      "type": "audit",
-      "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
-      "status": "sent",
-      "edInitiated": true
-    },
-    {
-      "id": "gnn-HJVQC15N",
-      "time": "2026-05-02T08:22:05.788Z",
-      "from": "Ed",
-      "to": "Mistral AI",
-      "type": "audit",
-      "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
-      "status": "sent",
-      "edInitiated": true
-    },
-    {
-      "id": "gnn-V33GOTZS",
-      "time": "2026-05-02T08:22:05.788Z",
-      "from": "Ed",
-      "to": "Groq",
-      "type": "audit",
-      "payload": "{\"from\":\"Ed\",\"action\":\"heartbeat\"}",
-      "status": "sent",
-      "edInitiated": true
-    },
-    {
-      "id": "gnn-RVV727AF",
-      "time": "2026-05-02T08:22:05.788Z",
       "from": "Ed",
       "to": "Cohere",
       "type": "audit",
